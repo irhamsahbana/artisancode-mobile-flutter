@@ -35,6 +35,37 @@ class ApiClient {
     );
   }
 
+  Future<void> putBinary(
+    String url, {
+    required List<int> body,
+    required String contentType,
+    Map<String, String>? headers,
+  }) async {
+    final uri = Uri.parse(url);
+    try {
+      final request = await _httpClient.openUrl('PUT', uri);
+      request.headers.contentType = ContentType.parse(contentType);
+      headers?.forEach((key, value) {
+        if (value.isNotEmpty) {
+          request.headers.set(key, value);
+        }
+      });
+      request.add(body);
+
+      final response = await request.close();
+      final responseBody = await response.transform(utf8.decoder).join();
+      if (response.statusCode >= 400) {
+        throw AppException(responseBody.isEmpty
+            ? 'Upload failed with status ${response.statusCode}.'
+            : responseBody);
+      }
+    } on SocketException {
+      throw const AppException('Unable to upload the photo proof right now.');
+    } on TimeoutException {
+      throw const AppException('The photo proof upload timed out.');
+    }
+  }
+
   Future<ApiResponse> _send({
     required String method,
     required String path,

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import '../../../shared/core/api/api_client.dart';
 import 'models/attendance_log.dart';
 import 'models/attendance_policy.dart';
@@ -6,6 +8,7 @@ import 'models/check_in_request.dart';
 import 'models/check_out_request.dart';
 import 'models/employee_profile.dart';
 import 'models/shift_today.dart';
+import 'models/upload_target.dart';
 
 class AttendanceRepository {
   AttendanceRepository({required ApiClient apiClient}) : _apiClient = apiClient;
@@ -63,6 +66,45 @@ class AttendanceRepository {
       }
     }
     return const [];
+  }
+
+  Future<UploadTarget> createAttendanceUploadUrl({
+    required String accessToken,
+    required String attendanceType,
+    required String contentType,
+  }) async {
+    final response = await _apiClient.post(
+      '/storage/upload-url',
+      accessToken: accessToken,
+      body: {
+        'filename': '$attendanceType-selfie',
+        'folder': 'attendance-face',
+        'content_type': contentType,
+        'is_public': false,
+      },
+    );
+    return UploadTarget.fromJson(response.requireDataMap());
+  }
+
+  Future<String> uploadAttendancePhoto({
+    required String accessToken,
+    required String attendanceType,
+    required String filePath,
+    required String contentType,
+  }) async {
+    final target = await createAttendanceUploadUrl(
+      accessToken: accessToken,
+      attendanceType: attendanceType,
+      contentType: contentType,
+    );
+    final bytes = await File(filePath).readAsBytes();
+    await _apiClient.putBinary(
+      target.uploadUrl,
+      body: bytes,
+      contentType: contentType,
+      headers: target.headers,
+    );
+    return target.fileId;
   }
 
   Future<void> checkIn({

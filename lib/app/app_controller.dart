@@ -147,6 +147,7 @@ class AppController extends ChangeNotifier {
     required String address,
     required String notes,
     required String deviceName,
+    required String selfiePath,
   }) async {
     if (_tokens == null) return;
 
@@ -154,6 +155,12 @@ class AppController extends ChangeNotifier {
     _setBusy(true);
 
     try {
+      final selfieFileId = await _attendanceRepository.uploadAttendancePhoto(
+        accessToken: _tokens!.accessToken,
+        attendanceType: 'check_in',
+        filePath: selfiePath,
+        contentType: _guessContentType(selfiePath),
+      );
       await _attendanceRepository.checkIn(
         accessToken: _tokens!.accessToken,
         request: CheckInRequest(
@@ -162,9 +169,10 @@ class AppController extends ChangeNotifier {
           notes: notes.trim().isEmpty ? null : notes.trim(),
           deviceId: defaultTargetPlatform.name,
           deviceName: deviceName.trim().isEmpty ? 'Artisan HR App' : deviceName.trim(),
+          selfieFileId: selfieFileId,
         ),
       );
-      _successMessage = 'Check-in recorded successfully.';
+      _successMessage = 'Check-in recorded successfully with photo proof.';
       await _bootstrapAuthenticatedState(loadLogs: true);
     } on AppException catch (error) {
       _errorMessage = error.message;
@@ -174,22 +182,32 @@ class AppController extends ChangeNotifier {
     }
   }
 
-  Future<void> checkOut({required String deviceName}) async {
+  Future<void> checkOut({
+    required String deviceName,
+    required String selfiePath,
+  }) async {
     if (_tokens == null) return;
 
     _clearMessages();
     _setBusy(true);
 
     try {
+      final selfieFileId = await _attendanceRepository.uploadAttendancePhoto(
+        accessToken: _tokens!.accessToken,
+        attendanceType: 'check_out',
+        filePath: selfiePath,
+        contentType: _guessContentType(selfiePath),
+      );
       await _attendanceRepository.checkOut(
         accessToken: _tokens!.accessToken,
         request: CheckOutRequest(
           loggedAt: DateTime.now(),
           deviceId: defaultTargetPlatform.name,
           deviceName: deviceName.trim().isEmpty ? 'Artisan HR App' : deviceName.trim(),
+          selfieFileId: selfieFileId,
         ),
       );
-      _successMessage = 'Check-out recorded successfully.';
+      _successMessage = 'Check-out recorded successfully with photo proof.';
       await _bootstrapAuthenticatedState(loadLogs: true);
     } on AppException catch (error) {
       _errorMessage = error.message;
@@ -259,5 +277,12 @@ class AppController extends ChangeNotifier {
   void _clearMessages() {
     _errorMessage = null;
     _successMessage = null;
+  }
+
+  String _guessContentType(String filePath) {
+    final value = filePath.toLowerCase();
+    if (value.endsWith('.png')) return 'image/png';
+    if (value.endsWith('.heic')) return 'image/heic';
+    return 'image/jpeg';
   }
 }

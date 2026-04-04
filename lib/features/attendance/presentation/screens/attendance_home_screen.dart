@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 
 import '../../../../app/app_controller.dart';
 import '../../../../shared/presentation/widgets/empty_state.dart';
@@ -15,7 +16,9 @@ class AttendanceHomeScreen extends StatelessWidget {
     final summary = controller.summary;
     final shift = controller.shiftToday;
     final policy = controller.policy;
-    final recentLogs = controller.attendanceLogs.take(3).toList(growable: false);
+    final recentLogs = controller.attendanceLogs
+        .take(3)
+        .toList(growable: false);
 
     return RefreshIndicator(
       onRefresh: controller.refreshAll,
@@ -24,18 +27,18 @@ class AttendanceHomeScreen extends StatelessWidget {
         children: [
           Text(
             employee?.fullName ?? controller.user?.userName ?? 'Employee',
-            style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                  fontWeight: FontWeight.w700,
-                ),
+            style: Theme.of(
+              context,
+            ).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w700),
           ),
           const SizedBox(height: 6),
           Text(
             employee?.employeeNo != null
                 ? 'Employee No: ${employee!.employeeNo}'
                 : controller.user?.tenantName ?? 'Attendance dashboard',
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: Colors.black54,
-                ),
+            style: Theme.of(
+              context,
+            ).textTheme.bodyMedium?.copyWith(color: Colors.black54),
           ),
           const SizedBox(height: 20),
           Card(
@@ -47,8 +50,8 @@ class AttendanceHomeScreen extends StatelessWidget {
                   Text(
                     'Today Summary',
                     style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                          fontWeight: FontWeight.w700,
-                        ),
+                      fontWeight: FontWeight.w700,
+                    ),
                   ),
                   const SizedBox(height: 12),
                   if (summary == null)
@@ -146,14 +149,15 @@ class AttendanceHomeScreen extends StatelessWidget {
                     'Name: ${employee.fullName}',
                     'Email: ${employee.email ?? '-'}',
                     'Status: ${employee.status ?? '-'}',
+                    'Photo proof: required on every check-in and check-out',
                   ],
           ),
           const SizedBox(height: 16),
           Text(
             'Recent Activity',
-            style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                  fontWeight: FontWeight.w700,
-                ),
+            style: Theme.of(
+              context,
+            ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700),
           ),
           const SizedBox(height: 12),
           if (recentLogs.isEmpty)
@@ -227,10 +231,15 @@ class AttendanceHomeScreen extends StatelessWidget {
 
     if (shouldSubmit == true) {
       try {
+        final selfie = await _captureSelfie();
+        if (selfie == null) {
+          return;
+        }
         await controller.checkIn(
           address: addressController.text,
           notes: notesController.text,
           deviceName: deviceController.text,
+          selfiePath: selfie.path,
         );
       } finally {
         notesController.dispose();
@@ -272,13 +281,29 @@ class AttendanceHomeScreen extends StatelessWidget {
 
     if (shouldSubmit == true) {
       try {
-        await controller.checkOut(deviceName: deviceController.text);
+        final selfie = await _captureSelfie();
+        if (selfie == null) {
+          return;
+        }
+        await controller.checkOut(
+          deviceName: deviceController.text,
+          selfiePath: selfie.path,
+        );
       } finally {
         deviceController.dispose();
       }
     } else {
       deviceController.dispose();
     }
+  }
+
+  Future<XFile?> _captureSelfie() async {
+    final picker = ImagePicker();
+    return picker.pickImage(
+      source: ImageSource.camera,
+      preferredCameraDevice: CameraDevice.front,
+      imageQuality: 85,
+    );
   }
 }
 
@@ -301,14 +326,16 @@ class _SummaryChip extends StatelessWidget {
         children: [
           Text(
             label,
-            style: Theme.of(context).textTheme.labelMedium?.copyWith(color: Colors.black54),
+            style: Theme.of(
+              context,
+            ).textTheme.labelMedium?.copyWith(color: Colors.black54),
           ),
           const SizedBox(height: 4),
           Text(
             value,
-            style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                  fontWeight: FontWeight.w700,
-                ),
+            style: Theme.of(
+              context,
+            ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700),
           ),
         ],
       ),
@@ -332,9 +359,9 @@ class _InfoCard extends StatelessWidget {
           children: [
             Text(
               title,
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.w700,
-                  ),
+              style: Theme.of(
+                context,
+              ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700),
             ),
             const SizedBox(height: 10),
             ...lines.map(

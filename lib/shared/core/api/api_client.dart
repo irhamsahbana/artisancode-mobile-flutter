@@ -47,9 +47,13 @@ class ApiClient {
       request.headers.contentType = ContentType.parse(contentType);
       headers?.forEach((key, value) {
         if (value.isNotEmpty) {
+          if (key.toLowerCase() == HttpHeaders.contentLengthHeader) {
+            return;
+          }
           request.headers.set(key, value);
         }
       });
+      request.contentLength = body.length;
       request.add(body);
 
       final response = await request.close();

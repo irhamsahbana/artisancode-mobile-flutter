@@ -18,6 +18,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final _passwordController = TextEditingController();
   final _tenantCodeController = TextEditingController();
   late final TextEditingController _baseUrlController;
+  bool _isPasswordVisible = false;
 
   @override
   void initState() {
@@ -154,9 +155,24 @@ class _LoginScreenState extends State<LoginScreen> {
                           const SizedBox(height: 16),
                           TextFormField(
                             controller: _passwordController,
-                            obscureText: true,
-                            decoration: const InputDecoration(
+                            obscureText: !_isPasswordVisible,
+                            decoration: InputDecoration(
                               labelText: 'Password',
+                              suffixIcon: IconButton(
+                                tooltip: _isPasswordVisible
+                                    ? 'Hide password'
+                                    : 'Show password',
+                                onPressed: () {
+                                  setState(() {
+                                    _isPasswordVisible = !_isPasswordVisible;
+                                  });
+                                },
+                                icon: Icon(
+                                  _isPasswordVisible
+                                      ? Icons.visibility_off_outlined
+                                      : Icons.visibility_outlined,
+                                ),
+                              ),
                             ),
                             validator: (value) {
                               if (value == null || value.isEmpty) {

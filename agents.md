@@ -41,6 +41,7 @@
 - Keep widgets small and composable.
 - Every network-driven screen should have clear loading, empty, error, and success states.
 - Preserve mobile-first ergonomics by default: tap targets, safe areas, keyboard behavior, and responsive layout decisions all matter.
+- Do not hardcode `fontSize` values in widgets. Prefer the app typography scale from `Theme.of(context).textTheme` and adjust emphasis with semantic styles or font weight instead of fixed sizes.
 
 ## Data And API Patterns
 

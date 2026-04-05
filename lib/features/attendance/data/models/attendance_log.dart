@@ -2,6 +2,7 @@ class AttendanceLog {
   const AttendanceLog({
     required this.id,
     required this.type,
+    required this.status,
     required this.source,
     required this.loggedAt,
     required this.attendanceDate,
@@ -11,6 +12,7 @@ class AttendanceLog {
 
   final String id;
   final String type;
+  final String status;
   final String source;
   final DateTime? loggedAt;
   final String attendanceDate;
@@ -21,6 +23,7 @@ class AttendanceLog {
     return AttendanceLog(
       id: json['id'] as String? ?? '',
       type: json['type'] as String? ?? '-',
+      status: json['status'] as String? ?? '-',
       source: json['source'] as String? ?? '-',
       loggedAt: _parseDateTime(json['logged_at']),
       attendanceDate: json['attendance_date'] as String? ?? '-',

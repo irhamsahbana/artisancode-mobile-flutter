@@ -143,6 +143,21 @@ class AppController extends ChangeNotifier {
     }
   }
 
+  Future<List<AttendanceLog>> getAttendanceLogsForMonth(DateTime month) async {
+    if (_tokens == null) return const [];
+
+    final firstDay = DateTime(month.year, month.month);
+    final lastDay = DateTime(month.year, month.month + 1, 0);
+
+    return _attendanceRepository.getAttendanceLogs(
+      accessToken: _tokens!.accessToken,
+      dateFrom: _formatDate(firstDay),
+      dateTo: _formatDate(lastDay),
+      limit: 200,
+      page: 1,
+    );
+  }
+
   Future<void> checkIn({
     required String address,
     required String notes,
@@ -284,5 +299,12 @@ class AppController extends ChangeNotifier {
     if (value.endsWith('.png')) return 'image/png';
     if (value.endsWith('.heic')) return 'image/heic';
     return 'image/jpeg';
+  }
+
+  String _formatDate(DateTime value) {
+    final local = value.toLocal();
+    final month = local.month.toString().padLeft(2, '0');
+    final day = local.day.toString().padLeft(2, '0');
+    return '${local.year}-$month-$day';
   }
 }

@@ -14,11 +14,13 @@ class ApiClient {
   Future<ApiResponse> get(
     String path, {
     String? accessToken,
+    Map<String, String?>? queryParameters,
   }) {
     return _send(
       method: 'GET',
       path: path,
       accessToken: accessToken,
+      queryParameters: queryParameters,
     );
   }
 
@@ -75,8 +77,19 @@ class ApiClient {
     required String path,
     String? accessToken,
     Map<String, dynamic>? body,
+    Map<String, String?>? queryParameters,
   }) async {
-    final uri = Uri.parse('$_baseUrl$path');
+    final baseUri = Uri.parse('$_baseUrl$path');
+    final sanitizedQueryParameters = queryParameters == null
+        ? null
+        : Map<String, String>.fromEntries(
+            queryParameters.entries.where(
+              (entry) => entry.value != null && entry.value!.trim().isNotEmpty,
+            ).map((entry) => MapEntry(entry.key, entry.value!.trim())),
+          );
+    final uri = sanitizedQueryParameters == null || sanitizedQueryParameters.isEmpty
+        ? baseUri
+        : baseUri.replace(queryParameters: sanitizedQueryParameters);
     try {
       final request = await _httpClient.openUrl(method, uri);
       request.headers.contentType = ContentType.json;

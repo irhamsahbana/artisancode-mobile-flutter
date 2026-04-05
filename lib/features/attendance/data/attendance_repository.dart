@@ -47,8 +47,23 @@ class AttendanceRepository {
     return response.dataOrNull == null ? null : ShiftToday.fromJson(response.requireDataMap());
   }
 
-  Future<List<AttendanceLog>> getAttendanceLogs({required String accessToken}) async {
-    final response = await _apiClient.get('/attendance-logs', accessToken: accessToken);
+  Future<List<AttendanceLog>> getAttendanceLogs({
+    required String accessToken,
+    String? dateFrom,
+    String? dateTo,
+    int limit = 100,
+    int page = 1,
+  }) async {
+    final response = await _apiClient.get(
+      '/attendance-logs',
+      accessToken: accessToken,
+      queryParameters: {
+        'date_from': dateFrom,
+        'date_to': dateTo,
+        'limit': '$limit',
+        'page': '$page',
+      },
+    );
     final data = response.dataOrNull;
     if (data is List) {
       return data

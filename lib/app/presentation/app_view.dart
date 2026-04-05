@@ -69,11 +69,11 @@ class _AuthenticatedShell extends StatelessWidget {
             successMessage: controller.successMessage,
             onDismissed: controller.clearTransientMessages,
           ),
-          Expanded(child: screens[controller.selectedTabIndex] as Widget),
+          Expanded(child: screens[controller.selectedTabIndex]),
         ],
       ),
       bottomNavigationBar: NavigationBar(
-        selectedIndex: controller.selectedTabIndex as int,
+        selectedIndex: controller.selectedTabIndex,
         onDestinationSelected: controller.selectTab,
         destinations: const [
           NavigationDestination(

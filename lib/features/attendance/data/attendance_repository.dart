@@ -9,14 +9,25 @@ import 'models/check_out_request.dart';
 import 'models/employee_profile.dart';
 import 'models/shift_today.dart';
 import 'models/upload_target.dart';
+import 'services/attendance_photo_preparer.dart';
 
 class AttendanceRepository {
-  AttendanceRepository({required ApiClient apiClient}) : _apiClient = apiClient;
+  AttendanceRepository({
+    required ApiClient apiClient,
+    AttendancePhotoPreparer? photoPreparer,
+  }) : _apiClient = apiClient,
+       _photoPreparer = photoPreparer ?? const AttendancePhotoPreparer();
 
   final ApiClient _apiClient;
+  final AttendancePhotoPreparer _photoPreparer;
 
-  Future<EmployeeProfile?> getEmployeeProfile({required String accessToken}) async {
-    final response = await _apiClient.get('/me/employee', accessToken: accessToken);
+  Future<EmployeeProfile?> getEmployeeProfile({
+    required String accessToken,
+  }) async {
+    final response = await _apiClient.get(
+      '/me/employee',
+      accessToken: accessToken,
+    );
     return response.dataOrNull == null
         ? null
         : EmployeeProfile.fromJson(response.requireDataMap());
@@ -25,8 +36,10 @@ class AttendanceRepository {
   Future<AttendanceSummary?> getAttendanceSummary({
     required String accessToken,
   }) async {
-    final response =
-        await _apiClient.get('/attendance-summary/today', accessToken: accessToken);
+    final response = await _apiClient.get(
+      '/attendance-summary/today',
+      accessToken: accessToken,
+    );
     return response.dataOrNull == null
         ? null
         : AttendanceSummary.fromJson(response.requireDataMap());
@@ -35,16 +48,23 @@ class AttendanceRepository {
   Future<AttendancePolicy?> getAttendancePolicy({
     required String accessToken,
   }) async {
-    final response =
-        await _apiClient.get('/attendance-policy', accessToken: accessToken);
+    final response = await _apiClient.get(
+      '/attendance-policy',
+      accessToken: accessToken,
+    );
     return response.dataOrNull == null
         ? null
         : AttendancePolicy.fromJson(response.requireDataMap());
   }
 
   Future<ShiftToday?> getShiftToday({required String accessToken}) async {
-    final response = await _apiClient.get('/me/shift-today', accessToken: accessToken);
-    return response.dataOrNull == null ? null : ShiftToday.fromJson(response.requireDataMap());
+    final response = await _apiClient.get(
+      '/me/shift-today',
+      accessToken: accessToken,
+    );
+    return response.dataOrNull == null
+        ? null
+        : ShiftToday.fromJson(response.requireDataMap());
   }
 
   Future<List<AttendanceLog>> getAttendanceLogs({
@@ -105,21 +125,32 @@ class AttendanceRepository {
     required String accessToken,
     required String attendanceType,
     required String filePath,
-    required String contentType,
   }) async {
-    final target = await createAttendanceUploadUrl(
-      accessToken: accessToken,
-      attendanceType: attendanceType,
-      contentType: contentType,
-    );
-    final bytes = await File(filePath).readAsBytes();
-    await _apiClient.putBinary(
-      target.uploadUrl,
-      body: bytes,
-      contentType: contentType,
-      headers: target.headers,
-    );
-    return target.fileId;
+    final preparedFile = await _photoPreparer.prepareForUpload(filePath);
+    final uploadPath = preparedFile.path.isEmpty ? filePath : preparedFile.path;
+    try {
+      final target = await createAttendanceUploadUrl(
+        accessToken: accessToken,
+        attendanceType: attendanceType,
+        contentType: preparedFile.contentType,
+      );
+      final bytes = await File(uploadPath).readAsBytes();
+      await _apiClient.putBinary(
+        target.uploadUrl,
+        body: bytes,
+        contentType: preparedFile.contentType,
+        headers: target.headers,
+      );
+      return target.fileId;
+    } finally {
+      if (preparedFile.didCompress && uploadPath != filePath) {
+        try {
+          await File(uploadPath).delete();
+        } catch (_) {
+          // Ignore temp cleanup failures after upload attempts.
+        }
+      }
+    }
   }
 
   Future<void> checkIn({

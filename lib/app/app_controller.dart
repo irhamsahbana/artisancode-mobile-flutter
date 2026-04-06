@@ -19,11 +19,14 @@ import '../shared/core/errors/app_exception.dart';
 
 class AppController extends ChangeNotifier {
   AppController({required String initialBaseUrl})
-      : _baseUrl = initialBaseUrl.trim(),
-        _apiClient = ApiClient(baseUrl: initialBaseUrl.trim()),
-        _authRepository = AuthRepository(apiClient: ApiClient(baseUrl: initialBaseUrl.trim())),
-        _attendanceRepository =
-            AttendanceRepository(apiClient: ApiClient(baseUrl: initialBaseUrl.trim()));
+    : _baseUrl = initialBaseUrl.trim(),
+      _apiClient = ApiClient(baseUrl: initialBaseUrl.trim()),
+      _authRepository = AuthRepository(
+        apiClient: ApiClient(baseUrl: initialBaseUrl.trim()),
+      ),
+      _attendanceRepository = AttendanceRepository(
+        apiClient: ApiClient(baseUrl: initialBaseUrl.trim()),
+      );
 
   String _baseUrl;
   late ApiClient _apiClient;
@@ -174,7 +177,6 @@ class AppController extends ChangeNotifier {
         accessToken: _tokens!.accessToken,
         attendanceType: 'check_in',
         filePath: selfiePath,
-        contentType: _guessContentType(selfiePath),
       );
       await _attendanceRepository.checkIn(
         accessToken: _tokens!.accessToken,
@@ -183,7 +185,9 @@ class AppController extends ChangeNotifier {
           address: address.trim().isEmpty ? null : address.trim(),
           notes: notes.trim().isEmpty ? null : notes.trim(),
           deviceId: defaultTargetPlatform.name,
-          deviceName: deviceName.trim().isEmpty ? 'Artisan HR App' : deviceName.trim(),
+          deviceName: deviceName.trim().isEmpty
+              ? 'Artisan HR App'
+              : deviceName.trim(),
           selfieFileId: selfieFileId,
         ),
       );
@@ -211,14 +215,15 @@ class AppController extends ChangeNotifier {
         accessToken: _tokens!.accessToken,
         attendanceType: 'check_out',
         filePath: selfiePath,
-        contentType: _guessContentType(selfiePath),
       );
       await _attendanceRepository.checkOut(
         accessToken: _tokens!.accessToken,
         request: CheckOutRequest(
           loggedAt: DateTime.now(),
           deviceId: defaultTargetPlatform.name,
-          deviceName: deviceName.trim().isEmpty ? 'Artisan HR App' : deviceName.trim(),
+          deviceName: deviceName.trim().isEmpty
+              ? 'Artisan HR App'
+              : deviceName.trim(),
           selfieFileId: selfieFileId,
         ),
       );
@@ -265,7 +270,9 @@ class AppController extends ChangeNotifier {
     _summary = results[2] as AttendanceSummary?;
     _policy = results[3] as AttendancePolicy?;
     _shiftToday = results[4] as ShiftToday?;
-    _attendanceLogs = List<AttendanceLog>.from(results[5] as List<AttendanceLog>);
+    _attendanceLogs = List<AttendanceLog>.from(
+      results[5] as List<AttendanceLog>,
+    );
     notifyListeners();
   }
 
@@ -281,7 +288,9 @@ class AppController extends ChangeNotifier {
     if (trimmed.isEmpty) {
       throw const AppException('API base URL is required.');
     }
-    return trimmed.endsWith('/') ? trimmed.substring(0, trimmed.length - 1) : trimmed;
+    return trimmed.endsWith('/')
+        ? trimmed.substring(0, trimmed.length - 1)
+        : trimmed;
   }
 
   void _setBusy(bool value) {
@@ -292,13 +301,6 @@ class AppController extends ChangeNotifier {
   void _clearMessages() {
     _errorMessage = null;
     _successMessage = null;
-  }
-
-  String _guessContentType(String filePath) {
-    final value = filePath.toLowerCase();
-    if (value.endsWith('.png')) return 'image/png';
-    if (value.endsWith('.heic')) return 'image/heic';
-    return 'image/jpeg';
   }
 
   String _formatDate(DateTime value) {

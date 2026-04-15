@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../app_controller.dart';
 import '../../features/attendance/presentation/screens/attendance_history_screen.dart';
 import '../../features/attendance/presentation/screens/attendance_home_screen.dart';
 import '../../features/auth/presentation/screens/login_screen.dart';
@@ -37,10 +38,11 @@ class AppView extends StatelessWidget {
 class _AuthenticatedShell extends StatelessWidget {
   const _AuthenticatedShell({required this.controller});
 
-  final dynamic controller;
+  final AppController controller;
 
   @override
   Widget build(BuildContext context) {
+    final strings = controller.strings;
     final screens = [
       AttendanceHomeScreen(controller: controller),
       AttendanceHistoryScreen(controller: controller),
@@ -50,13 +52,33 @@ class _AuthenticatedShell extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Artisan HR'),
         actions: [
+          DropdownButtonHideUnderline(
+            child: DropdownButton<String>(
+              value: controller.languageCode,
+              borderRadius: BorderRadius.circular(12),
+              onChanged: (value) {
+                if (value == null) return;
+                controller.setLanguage(value);
+              },
+              items: [
+                DropdownMenuItem(
+                  value: 'id',
+                  child: Text(strings.indonesianLabel),
+                ),
+                DropdownMenuItem(
+                  value: 'en',
+                  child: Text(strings.englishLabel),
+                ),
+              ],
+            ),
+          ),
           IconButton(
-            tooltip: 'Refresh',
+            tooltip: strings.refreshTooltip,
             onPressed: controller.refreshAll,
             icon: const Icon(Icons.refresh),
           ),
           IconButton(
-            tooltip: 'Sign out',
+            tooltip: strings.signOutTooltip,
             onPressed: controller.logout,
             icon: const Icon(Icons.logout),
           ),
@@ -75,16 +97,16 @@ class _AuthenticatedShell extends StatelessWidget {
       bottomNavigationBar: NavigationBar(
         selectedIndex: controller.selectedTabIndex,
         onDestinationSelected: controller.selectTab,
-        destinations: const [
+        destinations: [
           NavigationDestination(
             icon: Icon(Icons.dashboard_outlined),
             selectedIcon: Icon(Icons.dashboard),
-            label: 'Home',
+            label: strings.homeTab,
           ),
           NavigationDestination(
             icon: Icon(Icons.history_outlined),
             selectedIcon: Icon(Icons.history),
-            label: 'History',
+            label: strings.historyTab,
           ),
         ],
       ),

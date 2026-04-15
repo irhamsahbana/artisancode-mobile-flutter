@@ -55,6 +55,7 @@ class _AttendanceHistoryScreenState extends State<AttendanceHistoryScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final strings = widget.controller.strings;
     final entries = _buildEntries(
       logs: _logs,
       month: _selectedMonth,
@@ -73,7 +74,7 @@ class _AttendanceHistoryScreenState extends State<AttendanceHistoryScreen> {
         padding: const EdgeInsets.all(24),
         child: EmptyState(
           icon: Icons.error_outline,
-          title: 'Unable to load history',
+          title: strings.unableToLoadHistory,
           description: _errorMessage!,
         ),
       );
@@ -105,13 +106,12 @@ class _AttendanceHistoryScreenState extends State<AttendanceHistoryScreen> {
           ),
           const SizedBox(height: 16),
           if (entries.isEmpty)
-            const Padding(
+            Padding(
               padding: EdgeInsets.symmetric(horizontal: 24),
               child: EmptyState(
                 icon: Icons.history,
-                title: 'No attendance logs yet',
-                description:
-                    'Your attendance history will appear here after you check in or check out.',
+                title: strings.noAttendanceLogsYet,
+                description: strings.noAttendanceLogsDescription,
               ),
             )
           else

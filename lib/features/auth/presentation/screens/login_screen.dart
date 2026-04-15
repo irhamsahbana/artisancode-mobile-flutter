@@ -66,6 +66,8 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final strings = widget.controller.strings;
+
     return Scaffold(
       body: DecoratedBox(
         decoration: const BoxDecoration(
@@ -111,28 +113,49 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                           const SizedBox(height: 20),
                           Text(
-                            'Employee Attendance',
+                            strings.employeeAttendanceTitle,
                             style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                                   fontWeight: FontWeight.w700,
                                 ),
                           ),
                           const SizedBox(height: 8),
                           Text(
-                            'Sign in with your employee account to access attendance summary, check-in, check-out, and history.',
+                            strings.loginDescription,
                             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                                   color: Colors.black54,
                                 ),
                           ),
                           const SizedBox(height: 24),
+                          DropdownButtonFormField<String>(
+                            initialValue: widget.controller.languageCode,
+                            decoration: InputDecoration(
+                              labelText: strings.languageLabel,
+                            ),
+                            items: [
+                              DropdownMenuItem(
+                                value: 'id',
+                                child: Text(strings.indonesianLabel),
+                              ),
+                              DropdownMenuItem(
+                                value: 'en',
+                                child: Text(strings.englishLabel),
+                              ),
+                            ],
+                            onChanged: (value) {
+                              if (value == null) return;
+                              widget.controller.setLanguage(value);
+                            },
+                          ),
+                          const SizedBox(height: 16),
                           TextFormField(
                             controller: _baseUrlController,
-                            decoration: const InputDecoration(
-                              labelText: 'API Base URL',
+                            decoration: InputDecoration(
+                              labelText: strings.apiBaseUrl,
                               hintText: 'http://127.0.0.1:3939',
                             ),
                             validator: (value) {
                               if (value == null || value.trim().isEmpty) {
-                                return 'API base URL is required.';
+                                return strings.apiBaseUrlRequired;
                               }
                               return null;
                             },
@@ -141,13 +164,13 @@ class _LoginScreenState extends State<LoginScreen> {
                           TextFormField(
                             controller: _emailController,
                             keyboardType: TextInputType.emailAddress,
-                            decoration: const InputDecoration(
-                              labelText: 'Email',
+                            decoration: InputDecoration(
+                              labelText: strings.emailLabel,
                               hintText: 'employee@company.com',
                             ),
                             validator: (value) {
                               if (value == null || value.trim().isEmpty) {
-                                return 'Email is required.';
+                                return strings.emailRequired;
                               }
                               return null;
                             },
@@ -157,11 +180,11 @@ class _LoginScreenState extends State<LoginScreen> {
                             controller: _passwordController,
                             obscureText: !_isPasswordVisible,
                             decoration: InputDecoration(
-                              labelText: 'Password',
+                              labelText: strings.passwordLabel,
                               suffixIcon: IconButton(
                                 tooltip: _isPasswordVisible
-                                    ? 'Hide password'
-                                    : 'Show password',
+                                    ? strings.hidePassword
+                                    : strings.showPassword,
                                 onPressed: () {
                                   setState(() {
                                     _isPasswordVisible = !_isPasswordVisible;
@@ -176,7 +199,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                             validator: (value) {
                               if (value == null || value.isEmpty) {
-                                return 'Password is required.';
+                                return strings.passwordRequired;
                               }
                               return null;
                             },
@@ -185,13 +208,13 @@ class _LoginScreenState extends State<LoginScreen> {
                           TextFormField(
                             controller: _tenantCodeController,
                             textCapitalization: TextCapitalization.characters,
-                            decoration: const InputDecoration(
-                              labelText: 'Tenant Code',
+                            decoration: InputDecoration(
+                              labelText: strings.tenantCodeLabel,
                               hintText: 'ABCDE',
                             ),
                             validator: (value) {
                               if (value == null || value.trim().isEmpty) {
-                                return 'Tenant code is required.';
+                                return strings.tenantCodeRequired;
                               }
                               return null;
                             },
@@ -201,12 +224,12 @@ class _LoginScreenState extends State<LoginScreen> {
                             width: double.infinity,
                             child: FilledButton(
                               onPressed: widget.controller.isBusy ? null : _submit,
-                              child: const Text('Sign in'),
+                              child: Text(strings.signIn),
                             ),
                           ),
                           const SizedBox(height: 12),
                           Text(
-                            'Tip: You can override the API URL here for emulator, simulator, or local device testing.',
+                            strings.apiUrlHint,
                             style: Theme.of(context).textTheme.bodySmall?.copyWith(
                                   color: Colors.black54,
                                 ),

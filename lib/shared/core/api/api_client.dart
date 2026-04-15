@@ -3,13 +3,18 @@ import 'dart:convert';
 import 'dart:io';
 
 import '../errors/app_exception.dart';
+import '../logging/app_logger.dart';
 import 'api_response.dart';
 
 class ApiClient {
-  ApiClient({required String baseUrl}) : _baseUrl = baseUrl;
+  ApiClient({required String baseUrl}) : _baseUrl = baseUrl {
+    _httpClient.connectionTimeout = _connectionTimeout;
+  }
 
   final String _baseUrl;
   final HttpClient _httpClient = HttpClient();
+  static const Duration _connectionTimeout = Duration(seconds: 10);
+  static const Duration _requestTimeout = Duration(seconds: 20);
 
   Future<ApiResponse> get(
     String path, {
@@ -44,8 +49,21 @@ class ApiClient {
     Map<String, String>? headers,
   }) async {
     final uri = Uri.parse(url);
+    final stopwatch = Stopwatch()..start();
+    appLogger.i(
+      formatLogMessage(
+        'api.upload.started',
+        details: <String, Object?>{
+          'url': uri.toString(),
+          'contentType': contentType,
+          'bytes': body.length,
+        },
+      ),
+    );
     try {
-      final request = await _httpClient.openUrl('PUT', uri);
+      final request = await _httpClient
+          .openUrl('PUT', uri)
+          .timeout(_connectionTimeout);
       request.headers.contentType = ContentType.parse(contentType);
       headers?.forEach((key, value) {
         if (value.isNotEmpty) {
@@ -58,16 +76,51 @@ class ApiClient {
       request.contentLength = body.length;
       request.add(body);
 
-      final response = await request.close();
-      final responseBody = await response.transform(utf8.decoder).join();
+      final response = await request.close().timeout(_requestTimeout);
+      final responseBody = await response
+          .transform(utf8.decoder)
+          .join()
+          .timeout(_requestTimeout);
       if (response.statusCode >= 400) {
         throw AppException(responseBody.isEmpty
             ? 'Upload failed with status ${response.statusCode}.'
             : responseBody);
       }
+      appLogger.i(
+        formatLogMessage(
+          'api.upload.succeeded',
+          details: <String, Object?>{
+            'statusCode': response.statusCode,
+            'url': uri.toString(),
+            'elapsedMs': stopwatch.elapsedMilliseconds,
+          },
+        ),
+      );
     } on SocketException {
+      appLogger.e(
+        formatLogMessage(
+          'api.upload.failed',
+          message: 'Unable to upload the photo proof right now.',
+          details: <String, Object?>{
+            'url': uri.toString(),
+          },
+        ),
+        error: 'socket_exception',
+        stackTrace: StackTrace.current,
+      );
       throw const AppException('Unable to upload the photo proof right now.');
     } on TimeoutException {
+      appLogger.e(
+        formatLogMessage(
+          'api.upload.failed',
+          message: 'The photo proof upload timed out.',
+          details: <String, Object?>{
+            'url': uri.toString(),
+          },
+        ),
+        error: 'timeout_exception',
+        stackTrace: StackTrace.current,
+      );
       throw const AppException('The photo proof upload timed out.');
     }
   }
@@ -90,8 +143,21 @@ class ApiClient {
     final uri = sanitizedQueryParameters == null || sanitizedQueryParameters.isEmpty
         ? baseUri
         : baseUri.replace(queryParameters: sanitizedQueryParameters);
+    final stopwatch = Stopwatch()..start();
+    appLogger.i(
+      formatLogMessage(
+        'api.request.started',
+        details: <String, Object?>{
+          'method': method,
+          'url': uri.toString(),
+          'hasBody': body != null,
+        },
+      ),
+    );
     try {
-      final request = await _httpClient.openUrl(method, uri);
+      final request = await _httpClient
+          .openUrl(method, uri)
+          .timeout(_connectionTimeout);
       request.headers.contentType = ContentType.json;
       request.headers.set(HttpHeaders.acceptHeader, 'application/json');
       if (accessToken != null && accessToken.isNotEmpty) {
@@ -101,8 +167,11 @@ class ApiClient {
         request.write(jsonEncode(body));
       }
 
-      final response = await request.close();
-      final responseBody = await response.transform(utf8.decoder).join();
+      final response = await request.close().timeout(_requestTimeout);
+      final responseBody = await response
+          .transform(utf8.decoder)
+          .join()
+          .timeout(_requestTimeout);
       final json = responseBody.isEmpty
           ? const <String, dynamic>{}
           : jsonDecode(responseBody) as Map<String, dynamic>;
@@ -118,15 +187,76 @@ class ApiClient {
             : apiResponse.message);
       }
 
+      appLogger.i(
+        formatLogMessage(
+          'api.request.succeeded',
+          details: <String, Object?>{
+            'method': method,
+            'url': uri.toString(),
+            'statusCode': response.statusCode,
+            'elapsedMs': stopwatch.elapsedMilliseconds,
+          },
+        ),
+      );
       return apiResponse;
     } on SocketException {
+      appLogger.e(
+        formatLogMessage(
+          'api.request.failed',
+          message: 'Unable to connect to the API.',
+          details: <String, Object?>{
+            'method': method,
+            'url': uri.toString(),
+          },
+        ),
+        error: 'socket_exception',
+        stackTrace: StackTrace.current,
+      );
       throw const AppException(
         'Unable to connect to the API. Check the base URL and your network access.',
       );
     } on TimeoutException {
+      appLogger.e(
+        formatLogMessage(
+          'api.request.failed',
+          message: 'The request timed out.',
+          details: <String, Object?>{
+            'method': method,
+            'url': uri.toString(),
+          },
+        ),
+        error: 'timeout_exception',
+        stackTrace: StackTrace.current,
+      );
       throw const AppException('The request timed out.');
     } on FormatException {
+      appLogger.e(
+        formatLogMessage(
+          'api.request.failed',
+          message: 'The server returned an unexpected response format.',
+          details: <String, Object?>{
+            'method': method,
+            'url': uri.toString(),
+          },
+        ),
+        error: 'format_exception',
+        stackTrace: StackTrace.current,
+      );
       throw const AppException('The server returned an unexpected response format.');
+    } on AppException catch (error) {
+      appLogger.e(
+        formatLogMessage(
+          'api.request.failed',
+          message: error.message,
+          details: <String, Object?>{
+            'method': method,
+            'url': uri.toString(),
+          },
+        ),
+        error: error,
+        stackTrace: StackTrace.current,
+      );
+      rethrow;
     }
   }
 }

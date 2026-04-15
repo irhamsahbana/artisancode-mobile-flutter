@@ -18,10 +18,7 @@ class AuthRepository {
   }
 
   Future<UserContext> getMe({required String accessToken}) async {
-    final response = await _apiClient.get(
-      '/me',
-      accessToken: accessToken,
-    );
+    final response = await _apiClient.get('/me', accessToken: accessToken);
 
     return UserContext.fromJson(response.requireDataMap());
   }

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../l10n/generated/app_localizations.dart';
+import 'package:artisan_hr/l10n/generated/app_localizations.dart';
 
 enum AppMessageKey {
   unableToSignIn,

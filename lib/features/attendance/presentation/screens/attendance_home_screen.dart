@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
-import '../../../../app/app_controller.dart';
-import '../../../../shared/localization/l10n.dart';
-import '../../../../shared/presentation/widgets/empty_state.dart';
-import '../../../../shared/utils/formatters.dart';
+import 'package:artisan_hr/app/app_controller.dart';
+import 'package:artisan_hr/features/attendance/data/models/attendance_summary.dart';
+import 'package:artisan_hr/l10n/generated/app_localizations.dart';
+import 'package:artisan_hr/shared/localization/l10n.dart';
+import 'package:artisan_hr/shared/presentation/widgets/empty_state.dart';
+import 'package:artisan_hr/shared/utils/formatters.dart';
 
 class AttendanceHomeScreen extends StatelessWidget {
   const AttendanceHomeScreen({required this.controller, super.key});
@@ -28,7 +30,9 @@ class AttendanceHomeScreen extends StatelessWidget {
         padding: const EdgeInsets.all(20),
         children: [
           Text(
-            employee?.fullName ?? controller.user?.userName ?? l10n.employeeFallback,
+            employee?.fullName ??
+                controller.user?.userName ??
+                l10n.employeeFallback,
             style: Theme.of(
               context,
             ).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w700),
@@ -59,6 +63,8 @@ class AttendanceHomeScreen extends StatelessWidget {
                   if (summary == null)
                     Text(l10n.noSummary)
                   else ...[
+                    _TodayStatusCard(summary: summary),
+                    const SizedBox(height: 16),
                     Wrap(
                       spacing: 12,
                       runSpacing: 12,
@@ -69,11 +75,15 @@ class AttendanceHomeScreen extends StatelessWidget {
                         ),
                         _SummaryChip(
                           label: l10n.checkedIn,
-                          value: summary.checkedIn ? l10n.yesLabel : l10n.noLabel,
+                          value: summary.checkedIn
+                              ? l10n.yesLabel
+                              : l10n.noLabel,
                         ),
                         _SummaryChip(
                           label: l10n.checkedOut,
-                          value: summary.checkedOut ? l10n.yesLabel : l10n.noLabel,
+                          value: summary.checkedOut
+                              ? l10n.yesLabel
+                              : l10n.noLabel,
                         ),
                       ],
                     ),
@@ -81,7 +91,10 @@ class AttendanceHomeScreen extends StatelessWidget {
                     Text(
                       summary.lastLoggedAt == null
                           ? l10n.noAttendanceActivity
-                          : l10n.lastActivity(summary.lastLogType ?? '-', formatDateTime(summary.lastLoggedAt)),
+                          : l10n.lastActivity(
+                              summary.lastLogType ?? '-',
+                              formatDateTime(summary.lastLoggedAt),
+                            ),
                     ),
                   ],
                   const SizedBox(height: 20),
@@ -135,8 +148,14 @@ class AttendanceHomeScreen extends StatelessWidget {
                       ? [l10n.noPolicy]
                       : [
                           l10n.timezoneLabel(policy.timezone),
-                          l10n.checkInRange(policy.checkInStart ?? '-', policy.checkInEnd ?? '-'),
-                          l10n.checkOutRange(policy.checkOutStart ?? '-', policy.checkOutEnd ?? '-'),
+                          l10n.checkInRange(
+                            policy.checkInStart ?? '-',
+                            policy.checkInEnd ?? '-',
+                          ),
+                          l10n.checkOutRange(
+                            policy.checkOutStart ?? '-',
+                            policy.checkOutEnd ?? '-',
+                          ),
                         ],
                 ),
               ),
@@ -174,7 +193,9 @@ class AttendanceHomeScreen extends StatelessWidget {
                 padding: const EdgeInsets.only(bottom: 12),
                 child: Card(
                   child: ListTile(
-                    title: Text(log.type == 'check_in' ? l10n.checkIn : l10n.checkOut),
+                    title: Text(
+                      log.type == 'check_in' ? l10n.checkIn : l10n.checkOut,
+                    ),
                     subtitle: Text(formatDateTime(log.loggedAt)),
                     trailing: Text(log.source),
                   ),
@@ -311,6 +332,78 @@ class AttendanceHomeScreen extends StatelessWidget {
   }
 }
 
+class _TodayStatusCard extends StatelessWidget {
+  const _TodayStatusCard({required this.summary});
+
+  final AttendanceSummary summary;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+    final statusTone = _TodayStatusTone.fromSummary(colorScheme, summary);
+
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(18),
+      decoration: BoxDecoration(
+        color: statusTone.backgroundColor,
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            l10n.todayStatus,
+            style: theme.textTheme.labelLarge?.copyWith(
+              color: statusTone.foregroundColor,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            _todayStatusTitle(l10n, summary.todayStatus),
+            style: theme.textTheme.headlineSmall?.copyWith(
+              color: statusTone.foregroundColor,
+              fontWeight: FontWeight.w800,
+            ),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            _todayStatusDescription(l10n, summary.todayStatus),
+            style: theme.textTheme.bodyMedium?.copyWith(
+              color: statusTone.foregroundColor.withValues(alpha: 0.86),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  String _todayStatusTitle(AppLocalizations l10n, String status) {
+    switch (status) {
+      case 'checked_out':
+        return l10n.todayStatusCheckedOut;
+      case 'checked_in':
+        return l10n.todayStatusCheckedIn;
+      default:
+        return l10n.todayStatusNotCheckedIn;
+    }
+  }
+
+  String _todayStatusDescription(AppLocalizations l10n, String status) {
+    switch (status) {
+      case 'checked_out':
+        return l10n.todayStatusCheckedOutDescription;
+      case 'checked_in':
+        return l10n.todayStatusCheckedInDescription;
+      default:
+        return l10n.todayStatusNotCheckedInDescription;
+    }
+  }
+}
+
 class _SummaryChip extends StatelessWidget {
   const _SummaryChip({required this.label, required this.value});
 
@@ -344,6 +437,39 @@ class _SummaryChip extends StatelessWidget {
         ],
       ),
     );
+  }
+}
+
+class _TodayStatusTone {
+  const _TodayStatusTone({
+    required this.backgroundColor,
+    required this.foregroundColor,
+  });
+
+  final Color backgroundColor;
+  final Color foregroundColor;
+
+  factory _TodayStatusTone.fromSummary(
+    ColorScheme colorScheme,
+    AttendanceSummary summary,
+  ) {
+    switch (summary.todayStatus) {
+      case 'checked_out':
+        return _TodayStatusTone(
+          backgroundColor: colorScheme.primaryContainer,
+          foregroundColor: colorScheme.onPrimaryContainer,
+        );
+      case 'checked_in':
+        return _TodayStatusTone(
+          backgroundColor: colorScheme.tertiaryContainer,
+          foregroundColor: colorScheme.onTertiaryContainer,
+        );
+      default:
+        return _TodayStatusTone(
+          backgroundColor: colorScheme.errorContainer,
+          foregroundColor: colorScheme.onErrorContainer,
+        );
+    }
   }
 }
 

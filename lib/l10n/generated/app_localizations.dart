@@ -5,8 +5,8 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:intl/intl.dart' as intl;
 
-import 'app_localizations_en.dart';
-import 'app_localizations_id.dart';
+import 'package:artisan_hr/l10n/generated/app_localizations_en.dart';
+import 'package:artisan_hr/l10n/generated/app_localizations_id.dart';
 
 // ignore_for_file: type=lint
 
@@ -283,6 +283,48 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No summary data is available yet.'**
   String get noSummary;
+
+  /// No description provided for @todayStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'Today\'s Status'**
+  String get todayStatus;
+
+  /// No description provided for @todayStatusNotCheckedIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Not checked in yet'**
+  String get todayStatusNotCheckedIn;
+
+  /// No description provided for @todayStatusCheckedIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Checked in'**
+  String get todayStatusCheckedIn;
+
+  /// No description provided for @todayStatusCheckedOut.
+  ///
+  /// In en, this message translates to:
+  /// **'Checked out'**
+  String get todayStatusCheckedOut;
+
+  /// No description provided for @todayStatusNotCheckedInDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'You have not recorded attendance yet today.'**
+  String get todayStatusNotCheckedInDescription;
+
+  /// No description provided for @todayStatusCheckedInDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Your check-in is recorded. You only need to check out later.'**
+  String get todayStatusCheckedInDescription;
+
+  /// No description provided for @todayStatusCheckedOutDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Your attendance is complete for today.'**
+  String get todayStatusCheckedOutDescription;
 
   /// No description provided for @attendanceDate.
   ///

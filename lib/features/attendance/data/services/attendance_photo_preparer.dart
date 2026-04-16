@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:path/path.dart' as path;
 
-import '../models/prepared_upload_file.dart';
+import 'package:artisan_hr/features/attendance/data/models/prepared_upload_file.dart';
 
 class AttendancePhotoPreparer {
   const AttendancePhotoPreparer();

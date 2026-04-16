@@ -1,6 +1,7 @@
 class AttendanceSummary {
   const AttendanceSummary({
     required this.attendanceDate,
+    required this.todayStatus,
     required this.checkedIn,
     required this.checkedOut,
     required this.checkInLogId,
@@ -12,6 +13,7 @@ class AttendanceSummary {
   });
 
   final String attendanceDate;
+  final String todayStatus;
   final bool checkedIn;
   final bool checkedOut;
   final String? checkInLogId;
@@ -24,6 +26,7 @@ class AttendanceSummary {
   factory AttendanceSummary.fromJson(Map<String, dynamic> json) {
     return AttendanceSummary(
       attendanceDate: json['attendance_date'] as String? ?? '-',
+      todayStatus: json['today_status'] as String? ?? 'not_checked_in',
       checkedIn: json['checked_in'] as bool? ?? false,
       checkedOut: json['checked_out'] as bool? ?? false,
       checkInLogId: json['check_in_log_id'] as String?,

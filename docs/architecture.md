@@ -95,6 +95,7 @@ Recommended order:
 - Domain use cases should represent clear business actions.
 - Domain entities should stay separate from backend response DTOs.
 - Shared code should move into `lib/shared/` only when it is genuinely reused across features.
+- Cross-feature and shared code references inside `lib/` should use `package:artisan_hr/...` imports so file moves do not deepen relative paths.
 
 ## Out Of Scope For The First Slice
 

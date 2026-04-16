@@ -2,9 +2,9 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
-import '../errors/app_exception.dart';
-import '../logging/app_logger.dart';
-import 'api_response.dart';
+import 'package:artisan_hr/shared/core/api/api_response.dart';
+import 'package:artisan_hr/shared/core/errors/app_exception.dart';
+import 'package:artisan_hr/shared/core/logging/app_logger.dart';
 
 class ApiClient {
   ApiClient({required String baseUrl, String languageCode = 'id'})

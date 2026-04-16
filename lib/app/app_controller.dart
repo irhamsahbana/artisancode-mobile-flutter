@@ -3,22 +3,22 @@ import 'dart:ui';
 
 import 'package:flutter/foundation.dart';
 
-import '../features/attendance/data/attendance_repository.dart';
-import '../features/attendance/data/models/attendance_log.dart';
-import '../features/attendance/data/models/attendance_policy.dart';
-import '../features/attendance/data/models/attendance_summary.dart';
-import '../features/attendance/data/models/check_in_request.dart';
-import '../features/attendance/data/models/check_out_request.dart';
-import '../features/attendance/data/models/employee_profile.dart';
-import '../features/attendance/data/models/shift_today.dart';
-import '../features/auth/data/auth_repository.dart';
-import '../features/auth/data/models/auth_tokens.dart';
-import '../features/auth/data/models/login_request.dart';
-import '../features/auth/data/models/user_context.dart';
-import '../shared/core/api/api_client.dart';
-import '../shared/core/errors/app_exception.dart';
-import '../shared/core/logging/app_logger.dart';
-import '../shared/localization/l10n.dart';
+import 'package:artisan_hr/features/attendance/data/attendance_repository.dart';
+import 'package:artisan_hr/features/attendance/data/models/attendance_log.dart';
+import 'package:artisan_hr/features/attendance/data/models/attendance_policy.dart';
+import 'package:artisan_hr/features/attendance/data/models/attendance_summary.dart';
+import 'package:artisan_hr/features/attendance/data/models/check_in_request.dart';
+import 'package:artisan_hr/features/attendance/data/models/check_out_request.dart';
+import 'package:artisan_hr/features/attendance/data/models/employee_profile.dart';
+import 'package:artisan_hr/features/attendance/data/models/shift_today.dart';
+import 'package:artisan_hr/features/auth/data/auth_repository.dart';
+import 'package:artisan_hr/features/auth/data/models/auth_tokens.dart';
+import 'package:artisan_hr/features/auth/data/models/login_request.dart';
+import 'package:artisan_hr/features/auth/data/models/user_context.dart';
+import 'package:artisan_hr/shared/core/api/api_client.dart';
+import 'package:artisan_hr/shared/core/errors/app_exception.dart';
+import 'package:artisan_hr/shared/core/logging/app_logger.dart';
+import 'package:artisan_hr/shared/localization/l10n.dart';
 
 class AppController extends ChangeNotifier {
   AppController({required String initialBaseUrl})

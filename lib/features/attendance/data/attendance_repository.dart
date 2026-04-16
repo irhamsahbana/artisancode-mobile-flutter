@@ -1,15 +1,15 @@
 import 'dart:io';
 
-import '../../../shared/core/api/api_client.dart';
-import 'models/attendance_log.dart';
-import 'models/attendance_policy.dart';
-import 'models/attendance_summary.dart';
-import 'models/check_in_request.dart';
-import 'models/check_out_request.dart';
-import 'models/employee_profile.dart';
-import 'models/shift_today.dart';
-import 'models/upload_target.dart';
-import 'services/attendance_photo_preparer.dart';
+import 'package:artisan_hr/features/attendance/data/models/attendance_log.dart';
+import 'package:artisan_hr/features/attendance/data/models/attendance_policy.dart';
+import 'package:artisan_hr/features/attendance/data/models/attendance_summary.dart';
+import 'package:artisan_hr/features/attendance/data/models/check_in_request.dart';
+import 'package:artisan_hr/features/attendance/data/models/check_out_request.dart';
+import 'package:artisan_hr/features/attendance/data/models/employee_profile.dart';
+import 'package:artisan_hr/features/attendance/data/models/shift_today.dart';
+import 'package:artisan_hr/features/attendance/data/models/upload_target.dart';
+import 'package:artisan_hr/features/attendance/data/services/attendance_photo_preparer.dart';
+import 'package:artisan_hr/shared/core/api/api_client.dart';
 
 class AttendanceRepository {
   AttendanceRepository({

@@ -13,6 +13,9 @@
 - Prefer immutable data where practical.
 - Prefer small private helpers over deeply nested widget trees inside a single `build` method.
 - Avoid premature generic abstractions when code is still used by only one feature.
+- Inside `lib/`, prefer `package:artisan_hr/...` imports for app code instead of relative imports.
+- Keep import groups ordered as `dart:`, then `package:`, then relative only when absolutely necessary.
+- Remove unused imports as part of import refactors.
 
 ## Folder Conventions
 

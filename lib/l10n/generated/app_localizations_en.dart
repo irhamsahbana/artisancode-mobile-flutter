@@ -1,6 +1,6 @@
 // ignore: unused_import
 import 'package:intl/intl.dart' as intl;
-import 'app_localizations.dart';
+import 'package:artisan_hr/l10n/generated/app_localizations.dart';
 
 // ignore_for_file: type=lint
 
@@ -106,6 +106,30 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get noSummary => 'No summary data is available yet.';
+
+  @override
+  String get todayStatus => 'Today\'s Status';
+
+  @override
+  String get todayStatusNotCheckedIn => 'Not checked in yet';
+
+  @override
+  String get todayStatusCheckedIn => 'Checked in';
+
+  @override
+  String get todayStatusCheckedOut => 'Checked out';
+
+  @override
+  String get todayStatusNotCheckedInDescription =>
+      'You have not recorded attendance yet today.';
+
+  @override
+  String get todayStatusCheckedInDescription =>
+      'Your check-in is recorded. You only need to check out later.';
+
+  @override
+  String get todayStatusCheckedOutDescription =>
+      'Your attendance is complete for today.';
 
   @override
   String get attendanceDate => 'Attendance Date';

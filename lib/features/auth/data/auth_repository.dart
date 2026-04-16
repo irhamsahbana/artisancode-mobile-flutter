@@ -1,7 +1,7 @@
-import '../../../shared/core/api/api_client.dart';
-import 'models/auth_tokens.dart';
-import 'models/login_request.dart';
-import 'models/user_context.dart';
+import 'package:artisan_hr/features/auth/data/models/auth_tokens.dart';
+import 'package:artisan_hr/features/auth/data/models/login_request.dart';
+import 'package:artisan_hr/features/auth/data/models/user_context.dart';
+import 'package:artisan_hr/shared/core/api/api_client.dart';
 
 class AuthRepository {
   AuthRepository({required ApiClient apiClient}) : _apiClient = apiClient;

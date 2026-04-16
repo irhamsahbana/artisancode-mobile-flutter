@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
-import '../../../../app/app_controller.dart';
-import '../../../../shared/localization/l10n.dart';
-import '../../../../shared/presentation/widgets/empty_state.dart';
-import '../../data/models/attendance_log.dart';
+import 'package:artisan_hr/app/app_controller.dart';
+import 'package:artisan_hr/features/attendance/data/models/attendance_log.dart';
+import 'package:artisan_hr/shared/localization/l10n.dart';
+import 'package:artisan_hr/shared/presentation/widgets/empty_state.dart';
 
 class AttendanceHistoryScreen extends StatefulWidget {
   const AttendanceHistoryScreen({required this.controller, super.key});

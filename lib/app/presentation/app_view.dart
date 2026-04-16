@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
-import '../app_controller.dart';
-import '../../features/attendance/presentation/screens/attendance_history_screen.dart';
-import '../../features/attendance/presentation/screens/attendance_home_screen.dart';
-import '../../features/auth/presentation/screens/login_screen.dart';
-import '../../l10n/generated/app_localizations.dart';
-import '../../shared/presentation/widgets/app_message_banner.dart';
-import '../../shared/presentation/widgets/loading_overlay.dart';
-import '../../shared/localization/l10n.dart';
-import '../app.dart';
-import 'app_theme.dart';
+import 'package:artisan_hr/app/app.dart';
+import 'package:artisan_hr/app/app_controller.dart';
+import 'package:artisan_hr/app/presentation/app_theme.dart';
+import 'package:artisan_hr/features/attendance/presentation/screens/attendance_history_screen.dart';
+import 'package:artisan_hr/features/attendance/presentation/screens/attendance_home_screen.dart';
+import 'package:artisan_hr/features/auth/presentation/screens/login_screen.dart';
+import 'package:artisan_hr/l10n/generated/app_localizations.dart';
+import 'package:artisan_hr/shared/localization/l10n.dart';
+import 'package:artisan_hr/shared/presentation/widgets/app_message_banner.dart';
+import 'package:artisan_hr/shared/presentation/widgets/loading_overlay.dart';
 
 class AppView extends StatelessWidget {
   const AppView({super.key});

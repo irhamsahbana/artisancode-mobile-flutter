@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-import '../../../../app/app_controller.dart';
-import '../../../../shared/config/app_config.dart';
-import '../../../../shared/localization/l10n.dart';
+import 'package:artisan_hr/app/app_controller.dart';
+import 'package:artisan_hr/shared/config/app_config.dart';
+import 'package:artisan_hr/shared/localization/l10n.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({required this.controller, super.key});

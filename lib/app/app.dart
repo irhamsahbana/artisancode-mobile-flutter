@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-import '../shared/config/app_config.dart';
-import 'app_controller.dart';
-import 'presentation/app_view.dart';
+import 'package:artisan_hr/app/app_controller.dart';
+import 'package:artisan_hr/app/presentation/app_view.dart';
+import 'package:artisan_hr/shared/config/app_config.dart';
 
 class ArtisanHrApp extends StatefulWidget {
   const ArtisanHrApp({super.key});

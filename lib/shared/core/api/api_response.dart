@@ -1,4 +1,4 @@
-import '../errors/app_exception.dart';
+import 'package:artisan_hr/shared/core/errors/app_exception.dart';
 
 class ApiResponse {
   const ApiResponse({

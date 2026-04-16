@@ -34,6 +34,8 @@
 - Inside each feature, prefer `presentation`, `domain`, and `data` layers once the feature has enough complexity to justify them.
 - Leave generated platform files under `android/`, `ios/`, `macos/`, `linux/`, `windows/`, and `web/` untouched unless the task explicitly requires platform configuration.
 - Add new top-level folders only when they create a clear architectural boundary.
+- Prefer `package:artisan_hr/...` imports for code under `lib/` and avoid relative imports unless there is a real Dart language constraint.
+- Keep import sections ordered as `dart:`, then `package:`, then relative only if unavoidable, and remove unused imports during refactors.
 
 ## UI And State
 
@@ -54,9 +56,13 @@
   - `GET /attendance-policy`
   - `GET /attendance-logs`
   - `POST /attendance-logs/check-in`
-  - `POST /attendance-logs/check-out`
+- `POST /attendance-logs/check-out`
 - Keep API models separate from UI presentation models when that separation improves clarity.
 - Centralize HTTP client setup, auth token handling, and error mapping so features do not reimplement them.
+- Multi-language already exists. Read `docs/localization.md` before changing app language flow, ARB files, or localized API handling.
+- App locale source of truth is `lib/app/app_controller.dart`.
+- `ApiClient` already sends `Accept-Language`. Do not add per-feature language header logic.
+- Localized UI copy should come from ARB/gen-l10n output via `context.l10n`.
 
 ## Verification Checklist
 

@@ -1,8 +1,9 @@
-import 'package:flutter/material.dart';
 import 'dart:ui';
 
-import 'app/app.dart';
-import 'shared/core/logging/app_logger.dart';
+import 'package:flutter/material.dart';
+
+import 'package:artisan_hr/app/app.dart';
+import 'package:artisan_hr/shared/core/logging/app_logger.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();

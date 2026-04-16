@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../../app/app_controller.dart';
+import '../../../../shared/localization/l10n.dart';
 import '../../../../shared/presentation/widgets/empty_state.dart';
 import '../../data/models/attendance_log.dart';
 
@@ -55,8 +56,9 @@ class _AttendanceHistoryScreenState extends State<AttendanceHistoryScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final strings = widget.controller.strings;
+    final l10n = context.l10n;
     final entries = _buildEntries(
+      context: context,
       logs: _logs,
       month: _selectedMonth,
       shiftName: widget.controller.shiftToday?.shiftName,
@@ -74,7 +76,7 @@ class _AttendanceHistoryScreenState extends State<AttendanceHistoryScreen> {
         padding: const EdgeInsets.all(24),
         child: EmptyState(
           icon: Icons.error_outline,
-          title: strings.unableToLoadHistory,
+          title: l10n.unableToLoadHistory,
           description: _errorMessage!,
         ),
       );
@@ -110,8 +112,8 @@ class _AttendanceHistoryScreenState extends State<AttendanceHistoryScreen> {
               padding: EdgeInsets.symmetric(horizontal: 24),
               child: EmptyState(
                 icon: Icons.history,
-                title: strings.noAttendanceLogsYet,
-                description: strings.noAttendanceLogsDescription,
+                title: l10n.noAttendanceLogsYet,
+                description: l10n.noAttendanceLogsDescription,
               ),
             )
           else
@@ -149,7 +151,7 @@ class _MonthPickerButton extends StatelessWidget {
             const SizedBox(width: 14),
             Expanded(
               child: Text(
-                _formatMonthYear(value),
+                _formatMonthYear(context, value),
                 style: Theme.of(context).textTheme.titleMedium?.copyWith(
                       fontWeight: FontWeight.w600,
                     ),
@@ -170,6 +172,7 @@ class _SummaryCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     final labelStyle = Theme.of(context).textTheme.bodyMedium?.copyWith(
           color: const Color(0xFF667085),
         );
@@ -218,7 +221,7 @@ class _SummaryCard extends StatelessWidget {
                   children: [
                     Expanded(
                       child: _SummaryMetric(
-                        label: 'No record',
+                        label: l10n.noRecord,
                         value: summary.noRecordCount,
                         labelStyle: labelStyle,
                         valueStyle: valueStyle,
@@ -226,7 +229,7 @@ class _SummaryCard extends StatelessWidget {
                     ),
                     Expanded(
                       child: _SummaryMetric(
-                        label: 'Late clock in',
+                        label: l10n.lateClockIn,
                         value: summary.lateClockInCount,
                         labelStyle: labelStyle,
                         valueStyle: valueStyle,
@@ -234,7 +237,7 @@ class _SummaryCard extends StatelessWidget {
                     ),
                     Expanded(
                       child: _SummaryMetric(
-                        label: 'Early clock out',
+                        label: l10n.earlyClockOut,
                         value: summary.earlyClockOutCount,
                         labelStyle: labelStyle,
                         valueStyle: valueStyle,
@@ -247,7 +250,7 @@ class _SummaryCard extends StatelessWidget {
                   children: [
                     Expanded(
                       child: _SummaryMetric(
-                        label: 'No clock in',
+                        label: l10n.noClockIn,
                         value: summary.noClockInCount,
                         labelStyle: labelStyle,
                         valueStyle: valueStyle,
@@ -255,7 +258,7 @@ class _SummaryCard extends StatelessWidget {
                     ),
                     Expanded(
                       child: _SummaryMetric(
-                        label: 'No clock out',
+                        label: l10n.noClockOut,
                         value: summary.noClockOutCount,
                         labelStyle: labelStyle,
                         valueStyle: valueStyle,
@@ -364,6 +367,7 @@ class _HistoryRow extends StatelessWidget {
 class _DailyHistoryEntry {
   const _DailyHistoryEntry({
     required this.date,
+    required this.dayLabel,
     required this.subtitle,
     required this.checkInText,
     required this.checkOutText,
@@ -378,6 +382,7 @@ class _DailyHistoryEntry {
   });
 
   final DateTime date;
+  final String dayLabel;
   final String subtitle;
   final String checkInText;
   final String checkOutText;
@@ -390,7 +395,6 @@ class _DailyHistoryEntry {
   final bool isLateClockIn;
   final bool isEarlyClockOut;
 
-  String get dayLabel => '${date.day} ${_monthShortNames[date.month - 1]}';
 }
 
 class _MonthlySummary {
@@ -427,7 +431,7 @@ Future<DateTime?> _pickMonth(BuildContext context, DateTime selectedMonth) {
             final isSelected =
                 month.year == selectedMonth.year && month.month == selectedMonth.month;
             return ListTile(
-              title: Text(_formatMonthYear(month)),
+              title: Text(_formatMonthYear(context, month)),
               trailing: isSelected
                   ? const Icon(Icons.check, color: Color(0xFFC62828))
                   : null,
@@ -441,12 +445,14 @@ Future<DateTime?> _pickMonth(BuildContext context, DateTime selectedMonth) {
 }
 
 List<_DailyHistoryEntry> _buildEntries({
+  required BuildContext context,
   required List<AttendanceLog> logs,
   required DateTime month,
   required String? shiftName,
   required String? shiftStartTime,
   required String? shiftEndTime,
 }) {
+  final l10n = context.l10n;
   final groupedLogs = <String, List<AttendanceLog>>{};
   for (final log in logs) {
     groupedLogs.putIfAbsent(log.attendanceDate, () => <AttendanceLog>[]).add(log);
@@ -458,7 +464,7 @@ List<_DailyHistoryEntry> _buildEntries({
       ? now.day
       : lastDay.day;
 
-  final shiftLabel = (shiftName == null || shiftName.trim().isEmpty) ? 'Work shift' : shiftName;
+  final shiftLabel = (shiftName == null || shiftName.trim().isEmpty) ? l10n.workShift : shiftName;
   final shiftStartMinutes = _parseTimeToMinutes(shiftStartTime);
   final shiftEndMinutes = _parseTimeToMinutes(shiftEndTime);
 
@@ -502,8 +508,8 @@ List<_DailyHistoryEntry> _buildEntries({
         checkOutMinutes < shiftEndMinutes;
 
     final subtitle = hasAnyLog
-        ? (isWeekend ? 'Weekend' : shiftLabel)
-        : (isWeekend ? 'Weekend' : 'No attendance record');
+        ? (isWeekend ? l10n.weekend : shiftLabel)
+        : (isWeekend ? l10n.weekend : l10n.noAttendanceRecord);
     final highlightColor = hasAnyLog
         ? const Color(0xFF111827)
         : (isWeekend ? const Color(0xFFD84315) : const Color(0xFF6B7280));
@@ -513,6 +519,7 @@ List<_DailyHistoryEntry> _buildEntries({
     entries.add(
       _DailyHistoryEntry(
         date: date,
+        dayLabel: MaterialLocalizations.of(context).formatShortMonthDay(date),
         subtitle: subtitle,
         checkInText: checkInText,
         checkOutText: checkOutText,
@@ -567,8 +574,8 @@ _MonthlySummary _buildSummary(List<_DailyHistoryEntry> entries) {
   );
 }
 
-String _formatMonthYear(DateTime value) {
-  return '${_monthNames[value.month - 1]} ${value.year}';
+String _formatMonthYear(BuildContext context, DateTime value) {
+  return MaterialLocalizations.of(context).formatMonthYear(value);
 }
 
 String _formatDate(DateTime value) {
@@ -600,33 +607,3 @@ int? _timeOfDayMinutes(DateTime? value) {
   final local = value.toLocal();
   return (local.hour * 60) + local.minute;
 }
-
-const _monthNames = [
-  'January',
-  'February',
-  'March',
-  'April',
-  'May',
-  'June',
-  'July',
-  'August',
-  'September',
-  'October',
-  'November',
-  'December',
-];
-
-const _monthShortNames = [
-  'Jan',
-  'Feb',
-  'Mar',
-  'Apr',
-  'May',
-  'Jun',
-  'Jul',
-  'Aug',
-  'Sep',
-  'Oct',
-  'Nov',
-  'Dec',
-];

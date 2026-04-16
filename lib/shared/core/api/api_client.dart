@@ -7,14 +7,21 @@ import '../logging/app_logger.dart';
 import 'api_response.dart';
 
 class ApiClient {
-  ApiClient({required String baseUrl}) : _baseUrl = baseUrl {
+  ApiClient({required String baseUrl, String languageCode = 'id'})
+    : _baseUrl = baseUrl,
+      _languageCode = languageCode == 'en' ? 'en' : 'id' {
     _httpClient.connectionTimeout = _connectionTimeout;
   }
 
   final String _baseUrl;
   final HttpClient _httpClient = HttpClient();
+  String _languageCode;
   static const Duration _connectionTimeout = Duration(seconds: 10);
   static const Duration _requestTimeout = Duration(seconds: 20);
+
+  void setLanguageCode(String languageCode) {
+    _languageCode = languageCode == 'en' ? 'en' : 'id';
+  }
 
   Future<ApiResponse> get(
     String path, {
@@ -82,9 +89,11 @@ class ApiClient {
           .join()
           .timeout(_requestTimeout);
       if (response.statusCode >= 400) {
-        throw AppException(responseBody.isEmpty
-            ? 'Upload failed with status ${response.statusCode}.'
-            : responseBody);
+        throw AppException(
+          responseBody.isEmpty
+              ? 'Upload failed with status ${response.statusCode}.'
+              : responseBody,
+        );
       }
       appLogger.i(
         formatLogMessage(
@@ -101,9 +110,7 @@ class ApiClient {
         formatLogMessage(
           'api.upload.failed',
           message: 'Unable to upload the photo proof right now.',
-          details: <String, Object?>{
-            'url': uri.toString(),
-          },
+          details: <String, Object?>{'url': uri.toString()},
         ),
         error: 'socket_exception',
         stackTrace: StackTrace.current,
@@ -114,9 +121,7 @@ class ApiClient {
         formatLogMessage(
           'api.upload.failed',
           message: 'The photo proof upload timed out.',
-          details: <String, Object?>{
-            'url': uri.toString(),
-          },
+          details: <String, Object?>{'url': uri.toString()},
         ),
         error: 'timeout_exception',
         stackTrace: StackTrace.current,
@@ -136,11 +141,15 @@ class ApiClient {
     final sanitizedQueryParameters = queryParameters == null
         ? null
         : Map<String, String>.fromEntries(
-            queryParameters.entries.where(
-              (entry) => entry.value != null && entry.value!.trim().isNotEmpty,
-            ).map((entry) => MapEntry(entry.key, entry.value!.trim())),
+            queryParameters.entries
+                .where(
+                  (entry) =>
+                      entry.value != null && entry.value!.trim().isNotEmpty,
+                )
+                .map((entry) => MapEntry(entry.key, entry.value!.trim())),
           );
-    final uri = sanitizedQueryParameters == null || sanitizedQueryParameters.isEmpty
+    final uri =
+        sanitizedQueryParameters == null || sanitizedQueryParameters.isEmpty
         ? baseUri
         : baseUri.replace(queryParameters: sanitizedQueryParameters);
     final stopwatch = Stopwatch()..start();
@@ -160,8 +169,12 @@ class ApiClient {
           .timeout(_connectionTimeout);
       request.headers.contentType = ContentType.json;
       request.headers.set(HttpHeaders.acceptHeader, 'application/json');
+      request.headers.set(HttpHeaders.acceptLanguageHeader, _languageCode);
       if (accessToken != null && accessToken.isNotEmpty) {
-        request.headers.set(HttpHeaders.authorizationHeader, 'Bearer $accessToken');
+        request.headers.set(
+          HttpHeaders.authorizationHeader,
+          'Bearer $accessToken',
+        );
       }
       if (body != null) {
         request.write(jsonEncode(body));
@@ -182,9 +195,11 @@ class ApiClient {
       );
 
       if (response.statusCode >= 400 || !apiResponse.success) {
-        throw AppException(apiResponse.message.isEmpty
-            ? 'Request failed with status ${response.statusCode}.'
-            : apiResponse.message);
+        throw AppException(
+          apiResponse.message.isEmpty
+              ? 'Request failed with status ${response.statusCode}.'
+              : apiResponse.message,
+        );
       }
 
       appLogger.i(
@@ -204,10 +219,7 @@ class ApiClient {
         formatLogMessage(
           'api.request.failed',
           message: 'Unable to connect to the API.',
-          details: <String, Object?>{
-            'method': method,
-            'url': uri.toString(),
-          },
+          details: <String, Object?>{'method': method, 'url': uri.toString()},
         ),
         error: 'socket_exception',
         stackTrace: StackTrace.current,
@@ -220,10 +232,7 @@ class ApiClient {
         formatLogMessage(
           'api.request.failed',
           message: 'The request timed out.',
-          details: <String, Object?>{
-            'method': method,
-            'url': uri.toString(),
-          },
+          details: <String, Object?>{'method': method, 'url': uri.toString()},
         ),
         error: 'timeout_exception',
         stackTrace: StackTrace.current,
@@ -234,24 +243,20 @@ class ApiClient {
         formatLogMessage(
           'api.request.failed',
           message: 'The server returned an unexpected response format.',
-          details: <String, Object?>{
-            'method': method,
-            'url': uri.toString(),
-          },
+          details: <String, Object?>{'method': method, 'url': uri.toString()},
         ),
         error: 'format_exception',
         stackTrace: StackTrace.current,
       );
-      throw const AppException('The server returned an unexpected response format.');
+      throw const AppException(
+        'The server returned an unexpected response format.',
+      );
     } on AppException catch (error) {
       appLogger.e(
         formatLogMessage(
           'api.request.failed',
           message: error.message,
-          details: <String, Object?>{
-            'method': method,
-            'url': uri.toString(),
-          },
+          details: <String, Object?>{'method': method, 'url': uri.toString()},
         ),
         error: error,
         stackTrace: StackTrace.current,

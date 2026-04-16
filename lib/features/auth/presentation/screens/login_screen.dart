@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../../app/app_controller.dart';
 import '../../../../shared/config/app_config.dart';
+import '../../../../shared/localization/l10n.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({required this.controller, super.key});
@@ -57,7 +58,9 @@ class _LoginScreenState extends State<LoginScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
-            widget.controller.errorMessage ?? 'Unable to sign in.',
+            context.l10n.resolveMessage(widget.controller.errorMessage).isNotEmpty
+                ? context.l10n.resolveMessage(widget.controller.errorMessage)
+                : context.l10n.unableToSignIn,
           ),
         ),
       );
@@ -66,7 +69,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final strings = widget.controller.strings;
+    final l10n = context.l10n;
 
     return Scaffold(
       body: DecoratedBox(
@@ -113,14 +116,14 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                           const SizedBox(height: 20),
                           Text(
-                            strings.employeeAttendanceTitle,
+                            l10n.employeeAttendanceTitle,
                             style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                                   fontWeight: FontWeight.w700,
                                 ),
                           ),
                           const SizedBox(height: 8),
                           Text(
-                            strings.loginDescription,
+                            l10n.loginDescription,
                             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                                   color: Colors.black54,
                                 ),
@@ -129,16 +132,16 @@ class _LoginScreenState extends State<LoginScreen> {
                           DropdownButtonFormField<String>(
                             initialValue: widget.controller.languageCode,
                             decoration: InputDecoration(
-                              labelText: strings.languageLabel,
+                              labelText: l10n.languageLabel,
                             ),
                             items: [
                               DropdownMenuItem(
                                 value: 'id',
-                                child: Text(strings.indonesianLabel),
+                                child: Text(l10n.indonesianLabel),
                               ),
                               DropdownMenuItem(
                                 value: 'en',
-                                child: Text(strings.englishLabel),
+                                child: Text(l10n.englishLabel),
                               ),
                             ],
                             onChanged: (value) {
@@ -150,12 +153,12 @@ class _LoginScreenState extends State<LoginScreen> {
                           TextFormField(
                             controller: _baseUrlController,
                             decoration: InputDecoration(
-                              labelText: strings.apiBaseUrl,
+                              labelText: l10n.apiBaseUrl,
                               hintText: 'http://127.0.0.1:3939',
                             ),
                             validator: (value) {
                               if (value == null || value.trim().isEmpty) {
-                                return strings.apiBaseUrlRequired;
+                                return l10n.apiBaseUrlRequired;
                               }
                               return null;
                             },
@@ -165,12 +168,12 @@ class _LoginScreenState extends State<LoginScreen> {
                             controller: _emailController,
                             keyboardType: TextInputType.emailAddress,
                             decoration: InputDecoration(
-                              labelText: strings.emailLabel,
+                              labelText: l10n.emailLabel,
                               hintText: 'employee@company.com',
                             ),
                             validator: (value) {
                               if (value == null || value.trim().isEmpty) {
-                                return strings.emailRequired;
+                                return l10n.emailRequired;
                               }
                               return null;
                             },
@@ -180,11 +183,11 @@ class _LoginScreenState extends State<LoginScreen> {
                             controller: _passwordController,
                             obscureText: !_isPasswordVisible,
                             decoration: InputDecoration(
-                              labelText: strings.passwordLabel,
+                              labelText: l10n.passwordLabel,
                               suffixIcon: IconButton(
                                 tooltip: _isPasswordVisible
-                                    ? strings.hidePassword
-                                    : strings.showPassword,
+                                    ? l10n.hidePassword
+                                    : l10n.showPassword,
                                 onPressed: () {
                                   setState(() {
                                     _isPasswordVisible = !_isPasswordVisible;
@@ -199,7 +202,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                             validator: (value) {
                               if (value == null || value.isEmpty) {
-                                return strings.passwordRequired;
+                                return l10n.passwordRequired;
                               }
                               return null;
                             },
@@ -209,12 +212,12 @@ class _LoginScreenState extends State<LoginScreen> {
                             controller: _tenantCodeController,
                             textCapitalization: TextCapitalization.characters,
                             decoration: InputDecoration(
-                              labelText: strings.tenantCodeLabel,
+                              labelText: l10n.tenantCodeLabel,
                               hintText: 'ABCDE',
                             ),
                             validator: (value) {
                               if (value == null || value.trim().isEmpty) {
-                                return strings.tenantCodeRequired;
+                                return l10n.tenantCodeRequired;
                               }
                               return null;
                             },
@@ -224,12 +227,12 @@ class _LoginScreenState extends State<LoginScreen> {
                             width: double.infinity,
                             child: FilledButton(
                               onPressed: widget.controller.isBusy ? null : _submit,
-                              child: Text(strings.signIn),
+                              child: Text(l10n.signIn),
                             ),
                           ),
                           const SizedBox(height: 12),
                           Text(
-                            strings.apiUrlHint,
+                            l10n.apiUrlHint,
                             style: Theme.of(context).textTheme.bodySmall?.copyWith(
                                   color: Colors.black54,
                                 ),

@@ -1,0 +1,133 @@
+{
+  "@@locale": "en",
+  "languageLabel": "Language",
+  "indonesianLabel": "Indonesian",
+  "englishLabel": "English",
+  "refreshTooltip": "Refresh",
+  "signOutTooltip": "Sign out",
+  "homeTab": "Home",
+  "historyTab": "History",
+  "employeeAttendanceTitle": "Employee Attendance",
+  "loginDescription": "Sign in with your employee account to access attendance summary, check-in, check-out, and history.",
+  "apiBaseUrl": "API Base URL",
+  "apiBaseUrlRequired": "API base URL is required.",
+  "emailLabel": "Email",
+  "emailRequired": "Email is required.",
+  "passwordLabel": "Password",
+  "passwordRequired": "Password is required.",
+  "tenantCodeLabel": "Tenant Code",
+  "tenantCodeRequired": "Tenant code is required.",
+  "hidePassword": "Hide password",
+  "showPassword": "Show password",
+  "signIn": "Sign in",
+  "unableToSignIn": "Unable to sign in.",
+  "apiUrlHint": "Tip: You can override the API URL here for emulator, simulator, or local device testing.",
+  "signedInSuccessfully": "Signed in successfully.",
+  "signedOut": "Signed out.",
+  "checkInSuccess": "Check-in recorded successfully with photo proof.",
+  "checkOutSuccess": "Check-out recorded successfully with photo proof.",
+  "employeeFallback": "Employee",
+  "attendanceDashboard": "Attendance dashboard",
+  "employeeNoLabel": "Employee No: {value}",
+  "@employeeNoLabel": {
+    "placeholders": {
+      "value": {}
+    }
+  },
+  "todaySummary": "Today Summary",
+  "noSummary": "No summary data is available yet.",
+  "attendanceDate": "Attendance Date",
+  "checkedIn": "Checked In",
+  "checkedOut": "Checked Out",
+  "yesLabel": "Yes",
+  "noLabel": "No",
+  "noAttendanceActivity": "No attendance activity recorded yet today.",
+  "lastActivity": "Last activity: {type} at {loggedAt}",
+  "@lastActivity": {
+    "placeholders": {
+      "type": {},
+      "loggedAt": {}
+    }
+  },
+  "checkIn": "Check In",
+  "checkOut": "Check Out",
+  "shiftToday": "Shift Today",
+  "noShiftScheduled": "No shift scheduled today.",
+  "unnamedShift": "Unnamed shift",
+  "startLabel": "Start: {value}",
+  "@startLabel": {
+    "placeholders": {
+      "value": {}
+    }
+  },
+  "endLabel": "End: {value}",
+  "@endLabel": {
+    "placeholders": {
+      "value": {}
+    }
+  },
+  "attendancePolicy": "Attendance Policy",
+  "noPolicy": "No policy data available.",
+  "timezoneLabel": "Timezone: {value}",
+  "@timezoneLabel": {
+    "placeholders": {
+      "value": {}
+    }
+  },
+  "checkInRange": "Check-in: {start} - {end}",
+  "@checkInRange": {
+    "placeholders": {
+      "start": {},
+      "end": {}
+    }
+  },
+  "checkOutRange": "Check-out: {start} - {end}",
+  "@checkOutRange": {
+    "placeholders": {
+      "start": {},
+      "end": {}
+    }
+  },
+  "profile": "Profile",
+  "employeeProfileMissing": "Employee profile not found for this user.",
+  "nameLabel": "Name: {value}",
+  "@nameLabel": {
+    "placeholders": {
+      "value": {}
+    }
+  },
+  "emailValue": "Email: {value}",
+  "@emailValue": {
+    "placeholders": {
+      "value": {}
+    }
+  },
+  "statusLabel": "Status: {value}",
+  "@statusLabel": {
+    "placeholders": {
+      "value": {}
+    }
+  },
+  "photoProofRequired": "Photo proof: required on every check-in and check-out",
+  "recentActivity": "Recent Activity",
+  "noRecentLogs": "No recent logs",
+  "noRecentLogsDescription": "Your latest attendance actions will show up here.",
+  "confirmCheckIn": "Confirm Check In",
+  "confirmCheckOut": "Confirm Check Out",
+  "addressLabel": "Address",
+  "notesLabel": "Notes",
+  "deviceNameLabel": "Device name",
+  "cancel": "Cancel",
+  "submit": "Submit",
+  "unableToLoadHistory": "Unable to load history",
+  "noAttendanceLogsYet": "No attendance logs yet",
+  "noAttendanceLogsDescription": "Your attendance history will appear here after you check in or check out.",
+  "noRecord": "No record",
+  "lateClockIn": "Late clock in",
+  "earlyClockOut": "Early clock out",
+  "noClockIn": "No clock in",
+  "noClockOut": "No clock out",
+  "weekend": "Weekend",
+  "workShift": "Work shift",
+  "noAttendanceRecord": "No attendance record"
+}

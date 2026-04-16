@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:ui';
 
 import 'package:flutter/foundation.dart';
 
@@ -17,25 +18,19 @@ import '../features/auth/data/models/user_context.dart';
 import '../shared/core/api/api_client.dart';
 import '../shared/core/errors/app_exception.dart';
 import '../shared/core/logging/app_logger.dart';
-import '../shared/localization/app_strings.dart';
+import '../shared/localization/l10n.dart';
 
 class AppController extends ChangeNotifier {
   AppController({required String initialBaseUrl})
-    : _baseUrl = initialBaseUrl.trim(),
-      _apiClient = ApiClient(baseUrl: initialBaseUrl.trim()),
-      _authRepository = AuthRepository(
-        apiClient: ApiClient(baseUrl: initialBaseUrl.trim()),
-      ),
-      _attendanceRepository = AttendanceRepository(
-        apiClient: ApiClient(baseUrl: initialBaseUrl.trim()),
-      ) {
+    : _baseUrl = initialBaseUrl.trim() {
+    _apiClient = ApiClient(baseUrl: _baseUrl, languageCode: _languageCode);
+    _authRepository = AuthRepository(apiClient: _apiClient);
+    _attendanceRepository = AttendanceRepository(apiClient: _apiClient);
     appLogger.i(
       formatLogMessage(
         'app_controller.init',
         message: 'AppController created.',
-        details: <String, Object?>{
-          'baseUrl': _baseUrl,
-        },
+        details: <String, Object?>{'baseUrl': _baseUrl},
       ),
     );
   }
@@ -46,8 +41,8 @@ class AppController extends ChangeNotifier {
   late AttendanceRepository _attendanceRepository;
 
   bool _isBusy = false;
-  String? _errorMessage;
-  String? _successMessage;
+  AppMessage? _errorMessage;
+  AppMessage? _successMessage;
   int _selectedTabIndex = 0;
   String _languageCode = 'id';
 
@@ -61,11 +56,11 @@ class AppController extends ChangeNotifier {
 
   String get baseUrl => _baseUrl;
   bool get isBusy => _isBusy;
-  String? get errorMessage => _errorMessage;
-  String? get successMessage => _successMessage;
+  AppMessage? get errorMessage => _errorMessage;
+  AppMessage? get successMessage => _successMessage;
   int get selectedTabIndex => _selectedTabIndex;
   String get languageCode => _languageCode;
-  AppStrings get strings => AppStrings(_languageCode);
+  Locale get locale => Locale(_languageCode);
   bool get isAuthenticated => _tokens != null;
   UserContext? get user => _user;
   EmployeeProfile? get employee => _employee;
@@ -81,12 +76,11 @@ class AppController extends ChangeNotifier {
     final nextLanguageCode = languageCode == 'en' ? 'en' : 'id';
     if (_languageCode == nextLanguageCode) return;
     _languageCode = nextLanguageCode;
+    _apiClient.setLanguageCode(_languageCode);
     appLogger.i(
       formatLogMessage(
         'language.changed',
-        details: <String, Object?>{
-          'languageCode': _languageCode,
-        },
+        details: <String, Object?>{'languageCode': _languageCode},
       ),
     );
     notifyListeners();
@@ -126,7 +120,9 @@ class AppController extends ChangeNotifier {
 
       _tokens = tokens;
       await _bootstrapAuthenticatedState();
-      _successMessage = strings.signedInSuccessfully;
+      _successMessage = const AppMessage.key(
+        AppMessageKey.signedInSuccessfully,
+      );
       appLogger.i(
         formatLogMessage(
           'auth.login.succeeded',
@@ -138,23 +134,17 @@ class AppController extends ChangeNotifier {
         ),
       );
     } on AppException catch (error) {
-      _errorMessage = error.message;
+      _errorMessage = AppMessage.raw(error.message);
       appLogger.e(
-        formatLogMessage(
-          'auth.login.failed',
-          message: error.message,
-        ),
+        formatLogMessage('auth.login.failed', message: error.message),
         error: error,
         stackTrace: StackTrace.current,
       );
       rethrow;
     } catch (_) {
-      _errorMessage = strings.unableToSignIn;
+      _errorMessage = const AppMessage.key(AppMessageKey.unableToSignIn);
       appLogger.e(
-        formatLogMessage(
-          'auth.login.failed',
-          message: strings.unableToSignIn,
-        ),
+        formatLogMessage('auth.login.failed', message: 'Unable to sign in.'),
         error: _errorMessage,
         stackTrace: StackTrace.current,
       );
@@ -182,7 +172,7 @@ class AppController extends ChangeNotifier {
     _policy = null;
     _attendanceLogs = const [];
     _selectedTabIndex = 0;
-    _successMessage = strings.signedOut;
+    _successMessage = const AppMessage.key(AppMessageKey.signedOut);
     _errorMessage = null;
     notifyListeners();
   }
@@ -206,7 +196,7 @@ class AppController extends ChangeNotifier {
         ),
       );
     } on AppException catch (error) {
-      _errorMessage = error.message;
+      _errorMessage = AppMessage.raw(error.message);
       appLogger.e(
         formatLogMessage(
           'attendance.refresh_all.failed',
@@ -244,7 +234,7 @@ class AppController extends ChangeNotifier {
       );
       notifyListeners();
     } on AppException catch (error) {
-      _errorMessage = error.message;
+      _errorMessage = AppMessage.raw(error.message);
       appLogger.e(
         formatLogMessage(
           'attendance.refresh_history.failed',
@@ -289,7 +279,9 @@ class AppController extends ChangeNotifier {
       formatLogMessage(
         'attendance.check_in.started',
         details: <String, Object?>{
-          'deviceName': deviceName.trim().isEmpty ? 'Artisan HR App' : deviceName.trim(),
+          'deviceName': deviceName.trim().isEmpty
+              ? 'Artisan HR App'
+              : deviceName.trim(),
         },
       ),
     );
@@ -313,7 +305,7 @@ class AppController extends ChangeNotifier {
           selfieFileId: selfieFileId,
         ),
       );
-      _successMessage = strings.checkInSuccess;
+      _successMessage = const AppMessage.key(AppMessageKey.checkInSuccess);
       await _bootstrapAuthenticatedState(loadLogs: true);
       appLogger.i(
         formatLogMessage(
@@ -324,12 +316,9 @@ class AppController extends ChangeNotifier {
         ),
       );
     } on AppException catch (error) {
-      _errorMessage = error.message;
+      _errorMessage = AppMessage.raw(error.message);
       appLogger.e(
-        formatLogMessage(
-          'attendance.check_in.failed',
-          message: error.message,
-        ),
+        formatLogMessage('attendance.check_in.failed', message: error.message),
         error: error,
         stackTrace: StackTrace.current,
       );
@@ -352,7 +341,9 @@ class AppController extends ChangeNotifier {
       formatLogMessage(
         'attendance.check_out.started',
         details: <String, Object?>{
-          'deviceName': deviceName.trim().isEmpty ? 'Artisan HR App' : deviceName.trim(),
+          'deviceName': deviceName.trim().isEmpty
+              ? 'Artisan HR App'
+              : deviceName.trim(),
         },
       ),
     );
@@ -374,7 +365,7 @@ class AppController extends ChangeNotifier {
           selfieFileId: selfieFileId,
         ),
       );
-      _successMessage = strings.checkOutSuccess;
+      _successMessage = const AppMessage.key(AppMessageKey.checkOutSuccess);
       await _bootstrapAuthenticatedState(loadLogs: true);
       appLogger.i(
         formatLogMessage(
@@ -385,12 +376,9 @@ class AppController extends ChangeNotifier {
         ),
       );
     } on AppException catch (error) {
-      _errorMessage = error.message;
+      _errorMessage = AppMessage.raw(error.message);
       appLogger.e(
-        formatLogMessage(
-          'attendance.check_out.failed',
-          message: error.message,
-        ),
+        formatLogMessage('attendance.check_out.failed', message: error.message),
         error: error,
         stackTrace: StackTrace.current,
       );
@@ -412,9 +400,7 @@ class AppController extends ChangeNotifier {
     appLogger.i(
       formatLogMessage(
         'navigation.tab_changed',
-        details: <String, Object?>{
-          'index': index,
-        },
+        details: <String, Object?>{'index': index},
       ),
     );
     notifyListeners();
@@ -427,9 +413,7 @@ class AppController extends ChangeNotifier {
     appLogger.i(
       formatLogMessage(
         'bootstrap.authenticated.started',
-        details: <String, Object?>{
-          'loadLogs': loadLogs,
-        },
+        details: <String, Object?>{'loadLogs': loadLogs},
       ),
     );
     appLogger.i(
@@ -551,15 +535,13 @@ class AppController extends ChangeNotifier {
 
   void _configureBaseUrl(String baseUrl) {
     _baseUrl = baseUrl;
-    _apiClient = ApiClient(baseUrl: baseUrl);
+    _apiClient = ApiClient(baseUrl: baseUrl, languageCode: _languageCode);
     _authRepository = AuthRepository(apiClient: _apiClient);
     _attendanceRepository = AttendanceRepository(apiClient: _apiClient);
     appLogger.i(
       formatLogMessage(
         'api.base_url.configured',
-        details: <String, Object?>{
-          'baseUrl': _baseUrl,
-        },
+        details: <String, Object?>{'baseUrl': _baseUrl},
       ),
     );
   }
@@ -579,9 +561,7 @@ class AppController extends ChangeNotifier {
     appLogger.i(
       formatLogMessage(
         'ui.busy_changed',
-        details: <String, Object?>{
-          'isBusy': value,
-        },
+        details: <String, Object?>{'isBusy': value},
       ),
     );
     notifyListeners();

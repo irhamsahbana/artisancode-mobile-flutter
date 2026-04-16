@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../../../../app/app_controller.dart';
+import '../../../../shared/localization/l10n.dart';
 import '../../../../shared/presentation/widgets/empty_state.dart';
 import '../../../../shared/utils/formatters.dart';
 
@@ -12,7 +13,7 @@ class AttendanceHomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final strings = controller.strings;
+    final l10n = context.l10n;
     final employee = controller.employee;
     final summary = controller.summary;
     final shift = controller.shiftToday;
@@ -27,7 +28,7 @@ class AttendanceHomeScreen extends StatelessWidget {
         padding: const EdgeInsets.all(20),
         children: [
           Text(
-            employee?.fullName ?? controller.user?.userName ?? strings.employeeFallback,
+            employee?.fullName ?? controller.user?.userName ?? l10n.employeeFallback,
             style: Theme.of(
               context,
             ).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w700),
@@ -35,8 +36,8 @@ class AttendanceHomeScreen extends StatelessWidget {
           const SizedBox(height: 6),
           Text(
             employee?.employeeNo != null
-                ? strings.employeeNoLabel(employee!.employeeNo ?? '-')
-                : controller.user?.tenantName ?? strings.attendanceDashboard,
+                ? l10n.employeeNoLabel(employee!.employeeNo ?? '-')
+                : controller.user?.tenantName ?? l10n.attendanceDashboard,
             style: Theme.of(
               context,
             ).textTheme.bodyMedium?.copyWith(color: Colors.black54),
@@ -49,38 +50,38 @@ class AttendanceHomeScreen extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    strings.todaySummary,
+                    l10n.todaySummary,
                     style: Theme.of(context).textTheme.titleMedium?.copyWith(
                       fontWeight: FontWeight.w700,
                     ),
                   ),
                   const SizedBox(height: 12),
                   if (summary == null)
-                    Text(strings.noSummary)
+                    Text(l10n.noSummary)
                   else ...[
                     Wrap(
                       spacing: 12,
                       runSpacing: 12,
                       children: [
                         _SummaryChip(
-                          label: strings.attendanceDate,
+                          label: l10n.attendanceDate,
                           value: summary.attendanceDate,
                         ),
                         _SummaryChip(
-                          label: strings.checkedIn,
-                          value: strings.yesNo(summary.checkedIn),
+                          label: l10n.checkedIn,
+                          value: summary.checkedIn ? l10n.yesLabel : l10n.noLabel,
                         ),
                         _SummaryChip(
-                          label: strings.checkedOut,
-                          value: strings.yesNo(summary.checkedOut),
+                          label: l10n.checkedOut,
+                          value: summary.checkedOut ? l10n.yesLabel : l10n.noLabel,
                         ),
                       ],
                     ),
                     const SizedBox(height: 16),
                     Text(
                       summary.lastLoggedAt == null
-                          ? strings.noAttendanceActivity
-                          : strings.lastActivity(summary.lastLogType ?? '-', formatDateTime(summary.lastLoggedAt)),
+                          ? l10n.noAttendanceActivity
+                          : l10n.lastActivity(summary.lastLogType ?? '-', formatDateTime(summary.lastLoggedAt)),
                     ),
                   ],
                   const SizedBox(height: 20),
@@ -92,7 +93,7 @@ class AttendanceHomeScreen extends StatelessWidget {
                               ? () => _showCheckInDialog(context)
                               : null,
                           icon: const Icon(Icons.login),
-                          label: Text(strings.checkIn),
+                          label: Text(l10n.checkIn),
                         ),
                       ),
                       const SizedBox(width: 12),
@@ -102,7 +103,7 @@ class AttendanceHomeScreen extends StatelessWidget {
                               ? () => _showCheckOutDialog(context)
                               : null,
                           icon: const Icon(Icons.logout),
-                          label: Text(strings.checkOut),
+                          label: Text(l10n.checkOut),
                         ),
                       ),
                     ],
@@ -116,26 +117,26 @@ class AttendanceHomeScreen extends StatelessWidget {
             children: [
               Expanded(
                 child: _InfoCard(
-                  title: strings.shiftToday,
+                  title: l10n.shiftToday,
                   lines: shift == null
-                      ? [strings.noShiftScheduled]
+                      ? [l10n.noShiftScheduled]
                       : [
-                          shift.shiftName ?? strings.unnamedShift,
-                          strings.startLabel(shift.startTime ?? '-'),
-                          strings.endLabel(shift.endTime ?? '-'),
+                          shift.shiftName ?? l10n.unnamedShift,
+                          l10n.startLabel(shift.startTime ?? '-'),
+                          l10n.endLabel(shift.endTime ?? '-'),
                         ],
                 ),
               ),
               const SizedBox(width: 16),
               Expanded(
                 child: _InfoCard(
-                  title: strings.attendancePolicy,
+                  title: l10n.attendancePolicy,
                   lines: policy == null
-                      ? [strings.noPolicy]
+                      ? [l10n.noPolicy]
                       : [
-                          strings.timezoneLabel(policy.timezone),
-                          strings.checkInRange(policy.checkInStart ?? '-', policy.checkInEnd ?? '-'),
-                          strings.checkOutRange(policy.checkOutStart ?? '-', policy.checkOutEnd ?? '-'),
+                          l10n.timezoneLabel(policy.timezone),
+                          l10n.checkInRange(policy.checkInStart ?? '-', policy.checkInEnd ?? '-'),
+                          l10n.checkOutRange(policy.checkOutStart ?? '-', policy.checkOutEnd ?? '-'),
                         ],
                 ),
               ),
@@ -143,19 +144,19 @@ class AttendanceHomeScreen extends StatelessWidget {
           ),
           const SizedBox(height: 16),
           _InfoCard(
-            title: strings.profile,
+            title: l10n.profile,
             lines: employee == null
-                ? [strings.employeeProfileMissing]
+                ? [l10n.employeeProfileMissing]
                 : [
-                    strings.nameLabel(employee.fullName),
-                    strings.emailValue(employee.email ?? '-'),
-                    strings.statusLabel(employee.status ?? '-'),
-                    strings.photoProofRequired,
+                    l10n.nameLabel(employee.fullName),
+                    l10n.emailValue(employee.email ?? '-'),
+                    l10n.statusLabel(employee.status ?? '-'),
+                    l10n.photoProofRequired,
                   ],
           ),
           const SizedBox(height: 16),
           Text(
-            strings.recentActivity,
+            l10n.recentActivity,
             style: Theme.of(
               context,
             ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700),
@@ -164,8 +165,8 @@ class AttendanceHomeScreen extends StatelessWidget {
           if (recentLogs.isEmpty)
             EmptyState(
               icon: Icons.fact_check_outlined,
-              title: strings.noRecentLogs,
-              description: strings.noRecentLogsDescription,
+              title: l10n.noRecentLogs,
+              description: l10n.noRecentLogsDescription,
             )
           else
             ...recentLogs.map(
@@ -173,7 +174,7 @@ class AttendanceHomeScreen extends StatelessWidget {
                 padding: const EdgeInsets.only(bottom: 12),
                 child: Card(
                   child: ListTile(
-                    title: Text(log.type.replaceAll('_', ' ').toUpperCase()),
+                    title: Text(log.type == 'check_in' ? l10n.checkIn : l10n.checkOut),
                     subtitle: Text(formatDateTime(log.loggedAt)),
                     trailing: Text(log.source),
                   ),
@@ -186,7 +187,7 @@ class AttendanceHomeScreen extends StatelessWidget {
   }
 
   Future<void> _showCheckInDialog(BuildContext context) async {
-    final strings = controller.strings;
+    final l10n = context.l10n;
     final notesController = TextEditingController();
     final addressController = TextEditingController();
     final deviceController = TextEditingController(text: 'Artisan HR App');
@@ -195,24 +196,24 @@ class AttendanceHomeScreen extends StatelessWidget {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text(strings.confirmCheckIn),
+          title: Text(l10n.confirmCheckIn),
           content: SingleChildScrollView(
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
                 TextField(
                   controller: addressController,
-                  decoration: InputDecoration(labelText: strings.addressLabel),
+                  decoration: InputDecoration(labelText: l10n.addressLabel),
                 ),
                 const SizedBox(height: 12),
                 TextField(
                   controller: notesController,
-                  decoration: InputDecoration(labelText: strings.notesLabel),
+                  decoration: InputDecoration(labelText: l10n.notesLabel),
                 ),
                 const SizedBox(height: 12),
                 TextField(
                   controller: deviceController,
-                  decoration: InputDecoration(labelText: strings.deviceNameLabel),
+                  decoration: InputDecoration(labelText: l10n.deviceNameLabel),
                 ),
               ],
             ),
@@ -220,11 +221,11 @@ class AttendanceHomeScreen extends StatelessWidget {
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(false),
-              child: Text(strings.cancel),
+              child: Text(l10n.cancel),
             ),
             FilledButton(
               onPressed: () => Navigator.of(context).pop(true),
-              child: Text(strings.submit),
+              child: Text(l10n.submit),
             ),
           ],
         );
@@ -256,26 +257,26 @@ class AttendanceHomeScreen extends StatelessWidget {
   }
 
   Future<void> _showCheckOutDialog(BuildContext context) async {
-    final strings = controller.strings;
+    final l10n = context.l10n;
     final deviceController = TextEditingController(text: 'Artisan HR App');
 
     final shouldSubmit = await showDialog<bool>(
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text(strings.confirmCheckOut),
+          title: Text(l10n.confirmCheckOut),
           content: TextField(
             controller: deviceController,
-            decoration: InputDecoration(labelText: strings.deviceNameLabel),
+            decoration: InputDecoration(labelText: l10n.deviceNameLabel),
           ),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(false),
-              child: Text(strings.cancel),
+              child: Text(l10n.cancel),
             ),
             FilledButton(
               onPressed: () => Navigator.of(context).pop(true),
-              child: Text(strings.submit),
+              child: Text(l10n.submit),
             ),
           ],
         );

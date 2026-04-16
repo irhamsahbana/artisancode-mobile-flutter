@@ -1,0 +1,133 @@
+{
+  "@@locale": "id",
+  "languageLabel": "Bahasa",
+  "indonesianLabel": "Indonesia",
+  "englishLabel": "Inggris",
+  "refreshTooltip": "Muat ulang",
+  "signOutTooltip": "Keluar",
+  "homeTab": "Beranda",
+  "historyTab": "Riwayat",
+  "employeeAttendanceTitle": "Absensi Karyawan",
+  "loginDescription": "Masuk dengan akun karyawan Anda untuk melihat ringkasan absensi, check-in, check-out, dan riwayat.",
+  "apiBaseUrl": "Base URL API",
+  "apiBaseUrlRequired": "Base URL API wajib diisi.",
+  "emailLabel": "Email",
+  "emailRequired": "Email wajib diisi.",
+  "passwordLabel": "Kata Sandi",
+  "passwordRequired": "Kata sandi wajib diisi.",
+  "tenantCodeLabel": "Kode Tenant",
+  "tenantCodeRequired": "Kode tenant wajib diisi.",
+  "hidePassword": "Sembunyikan kata sandi",
+  "showPassword": "Tampilkan kata sandi",
+  "signIn": "Masuk",
+  "unableToSignIn": "Tidak bisa masuk saat ini.",
+  "apiUrlHint": "Tips: Anda bisa mengganti URL API di sini untuk emulator, simulator, atau pengujian perangkat lokal.",
+  "signedInSuccessfully": "Berhasil masuk.",
+  "signedOut": "Berhasil keluar.",
+  "checkInSuccess": "Check-in berhasil dicatat dengan bukti foto.",
+  "checkOutSuccess": "Check-out berhasil dicatat dengan bukti foto.",
+  "employeeFallback": "Karyawan",
+  "attendanceDashboard": "Dashboard absensi",
+  "employeeNoLabel": "No Karyawan: {value}",
+  "@employeeNoLabel": {
+    "placeholders": {
+      "value": {}
+    }
+  },
+  "todaySummary": "Ringkasan Hari Ini",
+  "noSummary": "Belum ada data ringkasan.",
+  "attendanceDate": "Tanggal Absensi",
+  "checkedIn": "Sudah Check-in",
+  "checkedOut": "Sudah Check-out",
+  "yesLabel": "Ya",
+  "noLabel": "Tidak",
+  "noAttendanceActivity": "Belum ada aktivitas absensi yang tercatat hari ini.",
+  "lastActivity": "Aktivitas terakhir: {type} pada {loggedAt}",
+  "@lastActivity": {
+    "placeholders": {
+      "type": {},
+      "loggedAt": {}
+    }
+  },
+  "checkIn": "Check In",
+  "checkOut": "Check Out",
+  "shiftToday": "Shift Hari Ini",
+  "noShiftScheduled": "Tidak ada shift terjadwal hari ini.",
+  "unnamedShift": "Shift tanpa nama",
+  "startLabel": "Mulai: {value}",
+  "@startLabel": {
+    "placeholders": {
+      "value": {}
+    }
+  },
+  "endLabel": "Selesai: {value}",
+  "@endLabel": {
+    "placeholders": {
+      "value": {}
+    }
+  },
+  "attendancePolicy": "Kebijakan Absensi",
+  "noPolicy": "Data kebijakan tidak tersedia.",
+  "timezoneLabel": "Zona waktu: {value}",
+  "@timezoneLabel": {
+    "placeholders": {
+      "value": {}
+    }
+  },
+  "checkInRange": "Check-in: {start} - {end}",
+  "@checkInRange": {
+    "placeholders": {
+      "start": {},
+      "end": {}
+    }
+  },
+  "checkOutRange": "Check-out: {start} - {end}",
+  "@checkOutRange": {
+    "placeholders": {
+      "start": {},
+      "end": {}
+    }
+  },
+  "profile": "Profil",
+  "employeeProfileMissing": "Profil karyawan tidak ditemukan untuk pengguna ini.",
+  "nameLabel": "Nama: {value}",
+  "@nameLabel": {
+    "placeholders": {
+      "value": {}
+    }
+  },
+  "emailValue": "Email: {value}",
+  "@emailValue": {
+    "placeholders": {
+      "value": {}
+    }
+  },
+  "statusLabel": "Status: {value}",
+  "@statusLabel": {
+    "placeholders": {
+      "value": {}
+    }
+  },
+  "photoProofRequired": "Bukti foto: wajib di setiap check-in dan check-out",
+  "recentActivity": "Aktivitas Terbaru",
+  "noRecentLogs": "Belum ada log terbaru",
+  "noRecentLogsDescription": "Aksi absensi terbaru Anda akan muncul di sini.",
+  "confirmCheckIn": "Konfirmasi Check In",
+  "confirmCheckOut": "Konfirmasi Check Out",
+  "addressLabel": "Alamat",
+  "notesLabel": "Catatan",
+  "deviceNameLabel": "Nama perangkat",
+  "cancel": "Batal",
+  "submit": "Kirim",
+  "unableToLoadHistory": "Tidak dapat memuat riwayat",
+  "noAttendanceLogsYet": "Belum ada log absensi",
+  "noAttendanceLogsDescription": "Riwayat absensi Anda akan muncul di sini setelah check-in atau check-out.",
+  "noRecord": "Tanpa catatan",
+  "lateClockIn": "Terlambat masuk",
+  "earlyClockOut": "Pulang awal",
+  "noClockIn": "Tidak check-in",
+  "noClockOut": "Tidak check-out",
+  "weekend": "Akhir pekan",
+  "workShift": "Shift kerja",
+  "noAttendanceRecord": "Tidak ada catatan absensi"
+}

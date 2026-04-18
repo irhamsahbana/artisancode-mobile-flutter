@@ -16,6 +16,13 @@ This app should grow from a narrow but reliable core:
 
 The repository is still a fresh Flutter scaffold. Architecture choices should support fast iteration while staying structured enough to evolve as the first feature slices grow.
 
+The current attendance experience also has a defined visual system:
+
+- brand name in product UI: `Presense`
+- Material 3 theme with shared brand primitives under `lib/app/presentation/`
+- platform launch assets and app icons aligned with the same brand mark
+- light mode and dark mode both supported from the root `MaterialApp`
+
 ## Recommended Application Shape
 
 Following a common Flutter clean architecture approach, the structure should stay feature-first, then split responsibilities by layer inside each feature:
@@ -96,6 +103,14 @@ Recommended order:
 - Domain entities should stay separate from backend response DTOs.
 - Shared code should move into `lib/shared/` only when it is genuinely reused across features.
 - Cross-feature and shared code references inside `lib/` should use `package:artisan_hr/...` imports so file moves do not deepen relative paths.
+- Brand primitives that affect multiple screens should stay centralized. Current examples:
+  - `lib/app/presentation/app_brand.dart` for shared brand mark, wordmark, and palette
+  - `lib/app/presentation/app_theme.dart` for light and dark theme definitions
+- Platform-facing branding is part of the mobile architecture surface, not an afterthought. When product branding changes, review:
+  - Android launcher label and splash drawable
+  - iOS display name, app icons, and launch assets
+  - web manifest, title, favicon, and icons
+- UX copy should be localized, concise, and layered. Primary status messaging belongs in one clear place instead of being repeated in multiple helper surfaces.
 
 ## Out Of Scope For The First Slice
 

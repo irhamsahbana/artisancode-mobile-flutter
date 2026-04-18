@@ -1,11 +1,11 @@
 {
-    "name": "artisan_hr",
-    "short_name": "artisan_hr",
+    "name": "Presense",
+    "short_name": "Presense",
     "start_url": ".",
     "display": "standalone",
-    "background_color": "#0175C2",
-    "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
+    "background_color": "#0F6E56",
+    "theme_color": "#0F6E56",
+    "description": "Presense helps employees check in, check out, and review attendance with clarity.",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [

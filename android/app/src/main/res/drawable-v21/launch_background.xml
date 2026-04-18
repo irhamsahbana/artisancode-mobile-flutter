@@ -4,8 +4,14 @@
         <shape android:shape="rectangle">
             <gradient
                 android:angle="270"
-                android:endColor="#F4F7F6"
-                android:startColor="#E6FFFA" />
+                android:endColor="#F8FCFA"
+                android:startColor="#E7F7F0" />
         </shape>
+    </item>
+    <item android:gravity="center">
+        <bitmap
+            android:antialias="true"
+            android:gravity="center"
+            android:src="@drawable/presense_splash_mark" />
     </item>
 </layer-list>

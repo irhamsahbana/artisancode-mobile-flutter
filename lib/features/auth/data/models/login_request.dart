@@ -10,10 +10,6 @@ class LoginRequest {
   final String tenantCode;
 
   Map<String, dynamic> toJson() {
-    return {
-      'email': email,
-      'password': password,
-      'tenant_code': tenantCode,
-    };
+    return {'email': email, 'password': password, 'tenant_code': tenantCode};
   }
 }

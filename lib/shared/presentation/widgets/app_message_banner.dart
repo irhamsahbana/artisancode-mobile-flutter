@@ -19,35 +19,48 @@ class AppMessageBanner extends StatelessWidget {
       return const SizedBox.shrink();
     }
 
+    final colorScheme = Theme.of(context).colorScheme;
     final isError = errorMessage != null;
-    final backgroundColor = isError ? const Color(0xFFFEE2E2) : const Color(0xFFDCFCE7);
-    final foregroundColor = isError ? const Color(0xFF991B1B) : const Color(0xFF166534);
+    final backgroundColor = isError
+        ? colorScheme.errorContainer
+        : colorScheme.primaryContainer;
+    final foregroundColor = isError
+        ? colorScheme.onErrorContainer
+        : colorScheme.onPrimaryContainer;
 
-    return Material(
-      color: backgroundColor,
-      child: InkWell(
-        onTap: onDismissed,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-          child: Row(
-            children: [
-              Icon(
-                isError ? Icons.error_outline : Icons.check_circle_outline,
-                color: foregroundColor,
-              ),
-              const SizedBox(width: 10),
-              Expanded(
-                child: Text(
-                  message,
-                  style: TextStyle(color: foregroundColor),
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
+      child: Material(
+        color: backgroundColor,
+        borderRadius: BorderRadius.circular(18),
+        child: InkWell(
+          borderRadius: BorderRadius.circular(18),
+          onTap: onDismissed,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            child: Row(
+              children: [
+                Icon(
+                  isError ? Icons.error_outline : Icons.check_circle_outline,
+                  color: foregroundColor,
                 ),
-              ),
-              IconButton(
-                visualDensity: VisualDensity.compact,
-                onPressed: onDismissed,
-                icon: Icon(Icons.close, color: foregroundColor),
-              ),
-            ],
+                const SizedBox(width: 10),
+                Expanded(
+                  child: Text(
+                    message,
+                    style: TextStyle(
+                      color: foregroundColor,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+                IconButton(
+                  visualDensity: VisualDensity.compact,
+                  onPressed: onDismissed,
+                  icon: Icon(Icons.close, color: foregroundColor),
+                ),
+              ],
+            ),
           ),
         ),
       ),

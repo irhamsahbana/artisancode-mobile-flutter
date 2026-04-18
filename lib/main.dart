@@ -1,17 +1,15 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:artisan_hr/app/app.dart';
 import 'package:artisan_hr/shared/core/logging/app_logger.dart';
 
-void main() {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   appLogger.i(
-    formatLogMessage(
-      'app.start',
-      message: 'Application bootstrap started.',
-    ),
+    formatLogMessage('app.start', message: 'Application bootstrap started.'),
   );
   FlutterError.onError = (details) {
     appLogger.e(
@@ -30,20 +28,13 @@ void main() {
   };
   PlatformDispatcher.instance.onError = (error, stackTrace) {
     appLogger.e(
-      formatLogMessage(
-        'platform.error',
-        message: 'Unhandled platform error.',
-      ),
+      formatLogMessage('platform.error', message: 'Unhandled platform error.'),
       error: error,
       stackTrace: stackTrace,
     );
     return true;
   };
-  runApp(const ArtisanHrApp());
-  appLogger.i(
-    formatLogMessage(
-      'app.run',
-      message: 'Root widget attached.',
-    ),
-  );
+  final sharedPreferences = await SharedPreferences.getInstance();
+  runApp(ArtisanHrApp(sharedPreferences: sharedPreferences));
+  appLogger.i(formatLogMessage('app.run', message: 'Root widget attached.'));
 }

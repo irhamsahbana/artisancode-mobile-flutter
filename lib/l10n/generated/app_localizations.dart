@@ -5,8 +5,8 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:intl/intl.dart' as intl;
 
-import 'package:artisan_hr/l10n/generated/app_localizations_en.dart';
-import 'package:artisan_hr/l10n/generated/app_localizations_id.dart';
+import 'app_localizations_en.dart';
+import 'app_localizations_id.dart';
 
 // ignore_for_file: type=lint
 
@@ -128,10 +128,16 @@ abstract class AppLocalizations {
   /// **'Sign out'**
   String get signOutTooltip;
 
+  /// No description provided for @moreActions.
+  ///
+  /// In en, this message translates to:
+  /// **'More actions'**
+  String get moreActions;
+
   /// No description provided for @homeTab.
   ///
   /// In en, this message translates to:
-  /// **'Home'**
+  /// **'Today'**
   String get homeTab;
 
   /// No description provided for @historyTab.
@@ -143,7 +149,7 @@ abstract class AppLocalizations {
   /// No description provided for @employeeAttendanceTitle.
   ///
   /// In en, this message translates to:
-  /// **'Employee Attendance'**
+  /// **'Today\'s attendance'**
   String get employeeAttendanceTitle;
 
   /// No description provided for @loginDescription.
@@ -151,6 +157,168 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Sign in with your employee account to access attendance summary, check-in, check-out, and history.'**
   String get loginDescription;
+
+  /// No description provided for @onboardingBadge.
+  ///
+  /// In en, this message translates to:
+  /// **'Attendance, made clear'**
+  String get onboardingBadge;
+
+  /// No description provided for @onboardingHeadline.
+  ///
+  /// In en, this message translates to:
+  /// **'Clearer check-ins. Smoother workdays.'**
+  String get onboardingHeadline;
+
+  /// No description provided for @onboardingSubheadline.
+  ///
+  /// In en, this message translates to:
+  /// **'Presense helps you review today\'s status, record attendance with the right proof, and revisit history without extra friction.'**
+  String get onboardingSubheadline;
+
+  /// No description provided for @onboardingAttendanceTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'See today\'s status at a glance'**
+  String get onboardingAttendanceTitle;
+
+  /// No description provided for @onboardingAttendanceDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'As soon as you sign in, you can view your attendance summary, check-in or check-out status, and today\'s active shift.'**
+  String get onboardingAttendanceDescription;
+
+  /// No description provided for @onboardingProofTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Record attendance with clear proof'**
+  String get onboardingProofTitle;
+
+  /// No description provided for @onboardingProofDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'The check-in and check-out flow is ready to submit live location, notes, and photo proof in line with company policy.'**
+  String get onboardingProofDescription;
+
+  /// No description provided for @justInTimePermissionsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Camera and location appear only when they matter'**
+  String get justInTimePermissionsTitle;
+
+  /// No description provided for @justInTimePermissionsDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Device permission is requested right before you capture selfie proof or attach coordinates, so the flow stays transparent and easy to trust.'**
+  String get justInTimePermissionsDescription;
+
+  /// No description provided for @onboardingHistoryTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'History stays easy to scan'**
+  String get onboardingHistoryTitle;
+
+  /// No description provided for @onboardingHistoryDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Review clock-in time, clock-out time, late arrivals, and early departures in one tidy summary.'**
+  String get onboardingHistoryDescription;
+
+  /// No description provided for @onboardingPermissionsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Device access consent'**
+  String get onboardingPermissionsTitle;
+
+  /// No description provided for @onboardingPermissionsDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Before using attendance features, we want to make sure you understand why the app needs location and camera access.'**
+  String get onboardingPermissionsDescription;
+
+  /// No description provided for @onboardingLocationConsentTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Allow location access'**
+  String get onboardingLocationConsentTitle;
+
+  /// No description provided for @onboardingLocationConsentDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Location is used to attach coordinates during check-in and check-out so attendance can be verified according to work policy.'**
+  String get onboardingLocationConsentDescription;
+
+  /// No description provided for @onboardingCameraConsentTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Allow camera access'**
+  String get onboardingCameraConsentTitle;
+
+  /// No description provided for @onboardingCameraConsentDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Camera access is used to capture photo proof on every check-in and check-out so attendance records stay accurate.'**
+  String get onboardingCameraConsentDescription;
+
+  /// No description provided for @onboardingPermissionHint.
+  ///
+  /// In en, this message translates to:
+  /// **'After you agree here, your device may still ask for the official system permission the first time each feature is used.'**
+  String get onboardingPermissionHint;
+
+  /// No description provided for @onboardingConsentRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Agree to location and camera access before continuing to login.'**
+  String get onboardingConsentRequired;
+
+  /// No description provided for @onboardingNext.
+  ///
+  /// In en, this message translates to:
+  /// **'Next'**
+  String get onboardingNext;
+
+  /// No description provided for @onboardingGetStarted.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in with my account'**
+  String get onboardingGetStarted;
+
+  /// No description provided for @skipIntro.
+  ///
+  /// In en, this message translates to:
+  /// **'Skip intro'**
+  String get skipIntro;
+
+  /// No description provided for @backToOnboarding.
+  ///
+  /// In en, this message translates to:
+  /// **'Back to intro'**
+  String get backToOnboarding;
+
+  /// No description provided for @loginCardTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in to Presense'**
+  String get loginCardTitle;
+
+  /// No description provided for @loginCardDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Use your employee account to review today\'s status, record attendance, and open history quickly.'**
+  String get loginCardDescription;
+
+  /// No description provided for @permissionUsageSummary.
+  ///
+  /// In en, this message translates to:
+  /// **'Camera and location are requested only during check-in or check-out, not on the sign-in screen.'**
+  String get permissionUsageSummary;
+
+  /// No description provided for @showAdvancedSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Show advanced settings'**
+  String get showAdvancedSettings;
 
   /// No description provided for @apiBaseUrl.
   ///
@@ -254,6 +422,12 @@ abstract class AppLocalizations {
   /// **'Check-out recorded successfully with photo proof.'**
   String get checkOutSuccess;
 
+  /// No description provided for @syncingAttendanceData.
+  ///
+  /// In en, this message translates to:
+  /// **'Syncing attendance data...'**
+  String get syncingAttendanceData;
+
   /// No description provided for @employeeFallback.
   ///
   /// In en, this message translates to:
@@ -263,7 +437,7 @@ abstract class AppLocalizations {
   /// No description provided for @attendanceDashboard.
   ///
   /// In en, this message translates to:
-  /// **'Attendance dashboard'**
+  /// **'Attendance overview'**
   String get attendanceDashboard;
 
   /// No description provided for @employeeNoLabel.
@@ -275,7 +449,7 @@ abstract class AppLocalizations {
   /// No description provided for @todaySummary.
   ///
   /// In en, this message translates to:
-  /// **'Today Summary'**
+  /// **'Today\'s summary'**
   String get todaySummary;
 
   /// No description provided for @noSummary.
@@ -317,7 +491,7 @@ abstract class AppLocalizations {
   /// No description provided for @todayStatusCheckedInDescription.
   ///
   /// In en, this message translates to:
-  /// **'Your check-in is recorded. You only need to check out later.'**
+  /// **'Your check-in is recorded. Check out when your workday is complete.'**
   String get todayStatusCheckedInDescription;
 
   /// No description provided for @todayStatusCheckedOutDescription.
@@ -371,14 +545,50 @@ abstract class AppLocalizations {
   /// No description provided for @checkIn.
   ///
   /// In en, this message translates to:
-  /// **'Check In'**
+  /// **'Check-in'**
   String get checkIn;
 
   /// No description provided for @checkOut.
   ///
   /// In en, this message translates to:
-  /// **'Check Out'**
+  /// **'Check-out'**
   String get checkOut;
+
+  /// No description provided for @loadingAttendanceState.
+  ///
+  /// In en, this message translates to:
+  /// **'Checking your attendance status.'**
+  String get loadingAttendanceState;
+
+  /// No description provided for @checkInAlreadyRecorded.
+  ///
+  /// In en, this message translates to:
+  /// **'Check-in is already recorded for today.'**
+  String get checkInAlreadyRecorded;
+
+  /// No description provided for @checkInUnavailableHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Check-in is not available yet. Review today\'s status or refresh again in a moment.'**
+  String get checkInUnavailableHint;
+
+  /// No description provided for @checkOutRequiresCheckIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Check-out becomes available after you check in.'**
+  String get checkOutRequiresCheckIn;
+
+  /// No description provided for @checkOutAlreadyRecorded.
+  ///
+  /// In en, this message translates to:
+  /// **'Check-out is already recorded for today.'**
+  String get checkOutAlreadyRecorded;
+
+  /// No description provided for @checkOutUnavailableHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Check-out is not available yet. Review your shift and attendance status first.'**
+  String get checkOutUnavailableHint;
 
   /// No description provided for @shiftToday.
   ///
@@ -479,8 +689,14 @@ abstract class AppLocalizations {
   /// No description provided for @recentActivity.
   ///
   /// In en, this message translates to:
-  /// **'Recent Activity'**
+  /// **'Recent activity'**
   String get recentActivity;
+
+  /// No description provided for @viewAllHistory.
+  ///
+  /// In en, this message translates to:
+  /// **'View all'**
+  String get viewAllHistory;
 
   /// No description provided for @noRecentLogs.
   ///
@@ -497,14 +713,26 @@ abstract class AppLocalizations {
   /// No description provided for @confirmCheckIn.
   ///
   /// In en, this message translates to:
-  /// **'Confirm Check In'**
+  /// **'Confirm check-in'**
   String get confirmCheckIn;
 
   /// No description provided for @confirmCheckOut.
   ///
   /// In en, this message translates to:
-  /// **'Confirm Check Out'**
+  /// **'Confirm check-out'**
   String get confirmCheckOut;
+
+  /// No description provided for @checkInSheetDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Complete the final details, capture selfie proof, and submit your check-in in one flow.'**
+  String get checkInSheetDescription;
+
+  /// No description provided for @checkOutSheetDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Capture selfie proof and submit check-out when your workday is complete.'**
+  String get checkOutSheetDescription;
 
   /// No description provided for @addressLabel.
   ///
@@ -524,6 +752,60 @@ abstract class AppLocalizations {
   /// **'Device name'**
   String get deviceNameLabel;
 
+  /// No description provided for @selfieProofTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Selfie proof'**
+  String get selfieProofTitle;
+
+  /// No description provided for @selfieAttached.
+  ///
+  /// In en, this message translates to:
+  /// **'Selfie proof is ready to submit.'**
+  String get selfieAttached;
+
+  /// No description provided for @selfieRequiredHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Capture a selfie before you submit attendance.'**
+  String get selfieRequiredHint;
+
+  /// No description provided for @captureSelfie.
+  ///
+  /// In en, this message translates to:
+  /// **'Capture selfie'**
+  String get captureSelfie;
+
+  /// No description provided for @retakeSelfie.
+  ///
+  /// In en, this message translates to:
+  /// **'Retake selfie'**
+  String get retakeSelfie;
+
+  /// No description provided for @removeSelfie.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove'**
+  String get removeSelfie;
+
+  /// No description provided for @submittingAttendance.
+  ///
+  /// In en, this message translates to:
+  /// **'Submitting attendance...'**
+  String get submittingAttendance;
+
+  /// No description provided for @submitCheckIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Submit check-in'**
+  String get submitCheckIn;
+
+  /// No description provided for @submitCheckOut.
+  ///
+  /// In en, this message translates to:
+  /// **'Submit check-out'**
+  String get submitCheckOut;
+
   /// No description provided for @cancel.
   ///
   /// In en, this message translates to:
@@ -541,6 +823,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Unable to load history'**
   String get unableToLoadHistory;
+
+  /// No description provided for @historyLoadErrorHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Refresh again to load your attendance history.'**
+  String get historyLoadErrorHint;
 
   /// No description provided for @noAttendanceLogsYet.
   ///
@@ -601,6 +889,66 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No attendance record'**
   String get noAttendanceRecord;
+
+  /// No description provided for @statusToneLoadingTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Preparing today\'s status'**
+  String get statusToneLoadingTitle;
+
+  /// No description provided for @statusToneLoadingDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'One moment. We are checking your latest attendance data.'**
+  String get statusToneLoadingDescription;
+
+  /// No description provided for @statusToneReadyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Ready to check in'**
+  String get statusToneReadyTitle;
+
+  /// No description provided for @statusToneReadyDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Review your details, capture selfie proof, and submit attendance.'**
+  String get statusToneReadyDescription;
+
+  /// No description provided for @statusToneCheckedInTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Check-in recorded'**
+  String get statusToneCheckedInTitle;
+
+  /// No description provided for @statusToneCheckedInDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Your attendance is active. Remember to check out later.'**
+  String get statusToneCheckedInDescription;
+
+  /// No description provided for @statusToneDoneTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'All set for today'**
+  String get statusToneDoneTitle;
+
+  /// No description provided for @statusToneDoneDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Your check-in and check-out are both recorded for today.'**
+  String get statusToneDoneDescription;
+
+  /// No description provided for @historySummaryTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'History overview'**
+  String get historySummaryTitle;
+
+  /// No description provided for @historySummaryDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Review monthly attendance patterns and open each workday in one tap.'**
+  String get historySummaryDescription;
 }
 
 class _AppLocalizationsDelegate

@@ -35,11 +35,16 @@
 - Every async screen should define loading, empty, error, and success states.
 - Prefer reusable widgets for repeated status cards, list rows, and action buttons.
 - Design for narrow mobile widths first, then let the layout expand gracefully.
+- Use theme tokens instead of ad-hoc colors for component surfaces, text, borders, and modal backgrounds.
+- New widgets should be reviewed in both light and dark mode before the task is considered complete.
+- Avoid duplicating nearby user-facing copy, especially in hero sections, status cards, onboarding steps, and helper banners.
+- If a component is visually tied to branding, prefer shared primitives from `lib/app/presentation/app_brand.dart` instead of re-declaring palette values locally.
 
 ## Testing Expectations
 
 - Add unit or widget tests when business logic becomes non-trivial.
 - Prefer focused tests around auth flow, attendance summary mapping, and check-in or check-out rules once those features exist.
+- When theming or brand surfaces change, manually inspect contrast-sensitive areas such as hero buttons, bottom sheets, pickers, and navigation surfaces.
 
 ## Documentation
 

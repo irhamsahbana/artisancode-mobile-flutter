@@ -32,5 +32,6 @@ Recommended implementation order for the first real slice:
 ## Documentation Workflow
 
 - Update docs when conventions or architecture assumptions change.
+- Update `agents.md` as well when the task changes workflow expectations, review rules, or agent operating instructions for future mobile work.
 - Prefer small incremental documentation updates over large rewrites.
 - Treat backend mobile attendance documentation as the API contract baseline until mobile-specific decisions start to diverge.

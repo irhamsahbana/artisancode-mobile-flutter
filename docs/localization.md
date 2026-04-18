@@ -37,6 +37,9 @@ Main building blocks:
 - If you change ARB keys, regenerate localization output with normal Flutter tooling as part of the task.
 - Keep app locale handling centralized in `AppController`.
 - Do not send language headers manually from repositories or feature code; `ApiClient` already does this.
+- When branding or UX language shifts, update both locales in the same task so one language does not preserve the old product tone.
+- Keep localized copy concise and avoid duplicated status wording across nearby widgets.
+- Product wording in the current mobile UI uses the `Presense` identity.
 
 ## Message Handling
 

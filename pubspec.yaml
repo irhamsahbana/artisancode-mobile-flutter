@@ -12,9 +12,11 @@ dependencies:
   flutter_localizations:
     sdk: flutter
   flutter_image_compress: ^2.4.0
+  geolocator: ^14.0.2
   image_picker: ^1.1.2
   logger: ^2.7.0
   path: ^1.9.1
+  shared_preferences: ^2.5.3
 
 dev_dependencies:
   flutter_test:

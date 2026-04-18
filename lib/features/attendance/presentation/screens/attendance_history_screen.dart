@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:artisan_hr/app/app_controller.dart';
+import 'package:artisan_hr/app/presentation/app_brand.dart';
 import 'package:artisan_hr/features/attendance/data/models/attendance_log.dart';
 import 'package:artisan_hr/shared/localization/l10n.dart';
 import 'package:artisan_hr/shared/presentation/widgets/empty_state.dart';
@@ -11,7 +12,8 @@ class AttendanceHistoryScreen extends StatefulWidget {
   final AppController controller;
 
   @override
-  State<AttendanceHistoryScreen> createState() => _AttendanceHistoryScreenState();
+  State<AttendanceHistoryScreen> createState() =>
+      _AttendanceHistoryScreenState();
 }
 
 class _AttendanceHistoryScreenState extends State<AttendanceHistoryScreen> {
@@ -35,7 +37,9 @@ class _AttendanceHistoryScreenState extends State<AttendanceHistoryScreen> {
     });
 
     try {
-      final logs = await widget.controller.getAttendanceLogsForMonth(_selectedMonth);
+      final logs = await widget.controller.getAttendanceLogsForMonth(
+        _selectedMonth,
+      );
       if (!mounted) return;
       setState(() {
         _logs = logs;
@@ -57,6 +61,7 @@ class _AttendanceHistoryScreenState extends State<AttendanceHistoryScreen> {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     final entries = _buildEntries(
       context: context,
       logs: _logs,
@@ -68,16 +73,38 @@ class _AttendanceHistoryScreenState extends State<AttendanceHistoryScreen> {
     final summary = _buildSummary(entries);
 
     if (_isLoading) {
-      return const Center(child: CircularProgressIndicator());
+      return ListView(
+        padding: const EdgeInsets.fromLTRB(20, 20, 20, 24),
+        children: const [
+          _HistoryLoadingCard(height: 64),
+          SizedBox(height: 16),
+          _HistoryLoadingCard(height: 180),
+          SizedBox(height: 16),
+          _HistoryLoadingCard(height: 88),
+          SizedBox(height: 12),
+          _HistoryLoadingCard(height: 88),
+        ],
+      );
     }
 
     if (_errorMessage != null) {
       return Padding(
         padding: const EdgeInsets.all(24),
-        child: EmptyState(
-          icon: Icons.error_outline,
-          title: l10n.unableToLoadHistory,
-          description: _errorMessage!,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            EmptyState(
+              icon: Icons.error_outline,
+              title: l10n.unableToLoadHistory,
+              description: l10n.historyLoadErrorHint,
+            ),
+            const SizedBox(height: 12),
+            FilledButton.icon(
+              onPressed: _loadLogs,
+              icon: const Icon(Icons.refresh_rounded),
+              label: Text(l10n.refreshTooltip),
+            ),
+          ],
         ),
       );
     }
@@ -87,6 +114,58 @@ class _AttendanceHistoryScreenState extends State<AttendanceHistoryScreen> {
       child: ListView(
         padding: const EdgeInsets.fromLTRB(0, 8, 0, 24),
         children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: Container(
+              padding: const EdgeInsets.all(18),
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: isDark
+                      ? [
+                          AppBrandPalette.nightCard,
+                          AppBrandPalette.nightSurface,
+                        ]
+                      : [Color(0xFFFFFFFF), Color(0xFFF1FAF6)],
+                ),
+                borderRadius: BorderRadius.circular(24),
+                border: Border.all(
+                  color: Theme.of(context).colorScheme.outlineVariant,
+                ),
+              ),
+              child: Row(
+                children: [
+                  const PresenseMark(size: 44),
+                  const SizedBox(width: 14),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          l10n.historySummaryTitle,
+                          style: Theme.of(context).textTheme.titleMedium
+                              ?.copyWith(fontWeight: FontWeight.w800),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          l10n.historySummaryDescription,
+                          style: Theme.of(context).textTheme.bodyMedium
+                              ?.copyWith(
+                                color: Theme.of(
+                                  context,
+                                ).colorScheme.onSurfaceVariant,
+                                height: 1.45,
+                              ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          const SizedBox(height: 16),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20),
             child: _MonthPickerButton(
@@ -109,7 +188,7 @@ class _AttendanceHistoryScreenState extends State<AttendanceHistoryScreen> {
           const SizedBox(height: 16),
           if (entries.isEmpty)
             Padding(
-              padding: EdgeInsets.symmetric(horizontal: 24),
+              padding: const EdgeInsets.symmetric(horizontal: 24),
               child: EmptyState(
                 icon: Icons.history,
                 title: l10n.noAttendanceLogsYet,
@@ -125,41 +204,61 @@ class _AttendanceHistoryScreenState extends State<AttendanceHistoryScreen> {
 }
 
 class _MonthPickerButton extends StatelessWidget {
-  const _MonthPickerButton({
-    required this.value,
-    required this.onTap,
-  });
+  const _MonthPickerButton({required this.value, required this.onTap});
 
   final DateTime value;
   final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(20),
       child: Ink(
         padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 18),
         decoration: BoxDecoration(
-          color: Colors.white,
-          border: Border.all(color: const Color(0xFFE5E7EB)),
+          color: colorScheme.surface,
+          border: Border.all(color: colorScheme.outlineVariant),
           borderRadius: BorderRadius.circular(20),
         ),
         child: Row(
           children: [
-            const Icon(Icons.calendar_today_outlined, color: Color(0xFF6B7280)),
+            Icon(Icons.calendar_today_outlined, color: colorScheme.primary),
             const SizedBox(width: 14),
             Expanded(
               child: Text(
                 _formatMonthYear(context, value),
-                style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                      fontWeight: FontWeight.w600,
-                    ),
+                style: Theme.of(
+                  context,
+                ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
               ),
             ),
-            const Icon(Icons.arrow_drop_down, color: Color(0xFF6B7280), size: 34),
+            Icon(
+              Icons.arrow_drop_down,
+              color: colorScheme.onSurfaceVariant,
+              size: 34,
+            ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class _HistoryLoadingCard extends StatelessWidget {
+  const _HistoryLoadingCard({required this.height});
+
+  final double height;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: height,
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.surfaceContainerHighest,
+        borderRadius: BorderRadius.circular(24),
       ),
     );
   }
@@ -173,20 +272,28 @@ class _SummaryCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    final labelStyle = Theme.of(context).textTheme.bodyMedium?.copyWith(
-          color: const Color(0xFF667085),
-        );
+    final colorScheme = Theme.of(context).colorScheme;
+    final labelStyle = Theme.of(
+      context,
+    ).textTheme.bodyMedium?.copyWith(color: colorScheme.onSurfaceVariant);
     final valueStyle = Theme.of(context).textTheme.titleLarge?.copyWith(
-          color: const Color(0xFF1565C0),
-          fontWeight: FontWeight.w700,
-        );
+      color: colorScheme.primary,
+      fontWeight: FontWeight.w700,
+    );
 
     return ClipRRect(
       borderRadius: BorderRadius.circular(28),
       child: Container(
         padding: const EdgeInsets.all(22),
         decoration: BoxDecoration(
-          color: const Color(0xFFF3F8FF),
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              colorScheme.primaryContainer.withValues(alpha: 0.92),
+              AppBrandPalette.softMint,
+            ],
+          ),
           borderRadius: BorderRadius.circular(28),
         ),
         child: Stack(
@@ -198,7 +305,7 @@ class _SummaryCard extends StatelessWidget {
                 width: 180,
                 height: 180,
                 decoration: BoxDecoration(
-                  color: const Color(0xFFDAE8F7),
+                  color: colorScheme.primaryContainer.withValues(alpha: 0.75),
                   borderRadius: BorderRadius.circular(90),
                 ),
               ),
@@ -210,13 +317,32 @@ class _SummaryCard extends StatelessWidget {
                 width: 220,
                 height: 220,
                 decoration: BoxDecoration(
-                  color: const Color(0xFFD1E2F6),
+                  color: colorScheme.primaryContainer.withValues(alpha: 0.5),
                   borderRadius: BorderRadius.circular(110),
                 ),
               ),
             ),
             Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                Text(
+                  l10n.historySummaryTitle,
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    color: colorScheme.onPrimaryContainer,
+                    fontWeight: FontWeight.w800,
+                  ),
+                ),
+                const SizedBox(height: 6),
+                Text(
+                  l10n.historySummaryDescription,
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    color: colorScheme.onPrimaryContainer.withValues(
+                      alpha: 0.78,
+                    ),
+                    height: 1.45,
+                  ),
+                ),
+                const SizedBox(height: 22),
                 Row(
                   children: [
                     Expanded(
@@ -294,7 +420,12 @@ class _SummaryMetric extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(label, maxLines: 2, overflow: TextOverflow.ellipsis, style: labelStyle),
+        Text(
+          label,
+          maxLines: 2,
+          overflow: TextOverflow.ellipsis,
+          style: labelStyle,
+        ),
         const SizedBox(height: 10),
         Text('$value', style: valueStyle),
       ],
@@ -310,22 +441,22 @@ class _HistoryRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final dateStyle = Theme.of(context).textTheme.titleLarge?.copyWith(
-          fontWeight: FontWeight.w700,
-          color: entry.highlightColor,
-        );
-    final subtitleStyle = Theme.of(context).textTheme.bodyLarge?.copyWith(
-          color: entry.highlightColor,
-        );
+      fontWeight: FontWeight.w700,
+      color: entry.highlightColor,
+    );
+    final subtitleStyle = Theme.of(
+      context,
+    ).textTheme.bodyLarge?.copyWith(color: entry.highlightColor);
     final timeStyle = Theme.of(context).textTheme.titleLarge?.copyWith(
-          color: entry.checkInColor,
-          fontWeight: FontWeight.w600,
-        );
+      color: entry.checkInColor,
+      fontWeight: FontWeight.w600,
+    );
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
         border: Border(
-          top: BorderSide(color: Color(0xFFE5E7EB)),
+          top: BorderSide(color: Theme.of(context).colorScheme.outlineVariant),
         ),
       ),
       child: Row(
@@ -342,18 +473,16 @@ class _HistoryRow extends StatelessWidget {
             ),
           ),
           Expanded(
-            child: Center(
-              child: Text(entry.checkInText, style: timeStyle),
-            ),
+            child: Center(child: Text(entry.checkInText, style: timeStyle)),
           ),
           Expanded(
             child: Center(
               child: Text(
                 entry.checkOutText,
                 style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                      color: entry.checkOutColor,
-                      fontWeight: FontWeight.w600,
-                    ),
+                  color: entry.checkOutColor,
+                  fontWeight: FontWeight.w600,
+                ),
               ),
             ),
           ),
@@ -394,7 +523,6 @@ class _DailyHistoryEntry {
   final bool hasCheckOut;
   final bool isLateClockIn;
   final bool isEarlyClockOut;
-
 }
 
 class _MonthlySummary {
@@ -427,17 +555,23 @@ Future<DateTime?> _pickMonth(BuildContext context, DateTime selectedMonth) {
       return SafeArea(
         child: ListView(
           shrinkWrap: true,
-          children: months.map((month) {
-            final isSelected =
-                month.year == selectedMonth.year && month.month == selectedMonth.month;
-            return ListTile(
-              title: Text(_formatMonthYear(context, month)),
-              trailing: isSelected
-                  ? const Icon(Icons.check, color: Color(0xFFC62828))
-                  : null,
-              onTap: () => Navigator.of(context).pop(month),
-            );
-          }).toList(growable: false),
+          children: months
+              .map((month) {
+                final isSelected =
+                    month.year == selectedMonth.year &&
+                    month.month == selectedMonth.month;
+                return ListTile(
+                  title: Text(_formatMonthYear(context, month)),
+                  trailing: isSelected
+                      ? Icon(
+                          Icons.check_circle_rounded,
+                          color: Theme.of(context).colorScheme.primary,
+                        )
+                      : null,
+                  onTap: () => Navigator.of(context).pop(month),
+                );
+              })
+              .toList(growable: false),
         ),
       );
     },
@@ -455,7 +589,9 @@ List<_DailyHistoryEntry> _buildEntries({
   final l10n = context.l10n;
   final groupedLogs = <String, List<AttendanceLog>>{};
   for (final log in logs) {
-    groupedLogs.putIfAbsent(log.attendanceDate, () => <AttendanceLog>[]).add(log);
+    groupedLogs
+        .putIfAbsent(log.attendanceDate, () => <AttendanceLog>[])
+        .add(log);
   }
 
   final now = DateTime.now();
@@ -464,7 +600,9 @@ List<_DailyHistoryEntry> _buildEntries({
       ? now.day
       : lastDay.day;
 
-  final shiftLabel = (shiftName == null || shiftName.trim().isEmpty) ? l10n.workShift : shiftName;
+  final shiftLabel = (shiftName == null || shiftName.trim().isEmpty)
+      ? l10n.workShift
+      : shiftName;
   final shiftStartMinutes = _parseTimeToMinutes(shiftStartTime);
   final shiftEndMinutes = _parseTimeToMinutes(shiftEndTime);
 
@@ -474,8 +612,10 @@ List<_DailyHistoryEntry> _buildEntries({
     final dateKey = _formatDate(date);
     final dayLogs = List<AttendanceLog>.from(groupedLogs[dateKey] ?? const [])
       ..sort((left, right) {
-        final leftTime = left.loggedAt ?? DateTime.fromMillisecondsSinceEpoch(0);
-        final rightTime = right.loggedAt ?? DateTime.fromMillisecondsSinceEpoch(0);
+        final leftTime =
+            left.loggedAt ?? DateTime.fromMillisecondsSinceEpoch(0);
+        final rightTime =
+            right.loggedAt ?? DateTime.fromMillisecondsSinceEpoch(0);
         return leftTime.compareTo(rightTime);
       });
 
@@ -490,7 +630,8 @@ List<_DailyHistoryEntry> _buildEntries({
       }
     }
 
-    final isWeekend = date.weekday == DateTime.saturday || date.weekday == DateTime.sunday;
+    final isWeekend =
+        date.weekday == DateTime.saturday || date.weekday == DateTime.sunday;
     final hasAnyLog = dayLogs.isNotEmpty;
     final hasCheckIn = checkInLog != null;
     final hasCheckOut = checkOutLog != null;
@@ -498,11 +639,13 @@ List<_DailyHistoryEntry> _buildEntries({
     final checkOutText = _formatTime(checkOutLog?.loggedAt);
     final checkInMinutes = _timeOfDayMinutes(checkInLog?.loggedAt);
     final checkOutMinutes = _timeOfDayMinutes(checkOutLog?.loggedAt);
-    final isLateClockIn = hasCheckIn &&
+    final isLateClockIn =
+        hasCheckIn &&
         shiftStartMinutes != null &&
         checkInMinutes != null &&
         checkInMinutes > shiftStartMinutes;
-    final isEarlyClockOut = hasCheckOut &&
+    final isEarlyClockOut =
+        hasCheckOut &&
         shiftEndMinutes != null &&
         checkOutMinutes != null &&
         checkOutMinutes < shiftEndMinutes;
@@ -511,10 +654,14 @@ List<_DailyHistoryEntry> _buildEntries({
         ? (isWeekend ? l10n.weekend : shiftLabel)
         : (isWeekend ? l10n.weekend : l10n.noAttendanceRecord);
     final highlightColor = hasAnyLog
-        ? const Color(0xFF111827)
-        : (isWeekend ? const Color(0xFFD84315) : const Color(0xFF6B7280));
-    final checkInColor = isLateClockIn ? const Color(0xFFD84315) : const Color(0xFF111827);
-    final checkOutColor = isEarlyClockOut ? const Color(0xFFD84315) : const Color(0xFF111827);
+        ? AppBrandPalette.ink
+        : (isWeekend ? const Color(0xFFD36A2B) : const Color(0xFF6B7280));
+    final checkInColor = isLateClockIn
+        ? const Color(0xFFD36A2B)
+        : AppBrandPalette.ink;
+    final checkOutColor = isEarlyClockOut
+        ? const Color(0xFFD36A2B)
+        : AppBrandPalette.ink;
 
     entries.add(
       _DailyHistoryEntry(
@@ -547,7 +694,8 @@ _MonthlySummary _buildSummary(List<_DailyHistoryEntry> entries) {
 
   for (final entry in entries) {
     final isWeekend =
-        entry.date.weekday == DateTime.saturday || entry.date.weekday == DateTime.sunday;
+        entry.date.weekday == DateTime.saturday ||
+        entry.date.weekday == DateTime.sunday;
     if (!entry.hasAnyLog && !isWeekend) {
       noRecordCount += 1;
     }

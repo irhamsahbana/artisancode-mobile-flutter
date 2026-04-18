@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:artisan_hr/app/app_controller.dart';
 import 'package:artisan_hr/app/presentation/app_view.dart';
 import 'package:artisan_hr/shared/config/app_config.dart';
 
 class ArtisanHrApp extends StatefulWidget {
-  const ArtisanHrApp({super.key});
+  const ArtisanHrApp({required this.sharedPreferences, super.key});
+
+  final SharedPreferences sharedPreferences;
 
   @override
   State<ArtisanHrApp> createState() => _ArtisanHrAppState();
@@ -19,6 +22,7 @@ class _ArtisanHrAppState extends State<ArtisanHrApp> {
     super.initState();
     _controller = AppController(
       initialBaseUrl: AppConfig.defaultApiBaseUrl,
+      sharedPreferences: widget.sharedPreferences,
     );
   }
 
@@ -30,19 +34,13 @@ class _ArtisanHrAppState extends State<ArtisanHrApp> {
 
   @override
   Widget build(BuildContext context) {
-    return AppScope(
-      controller: _controller,
-      child: const AppView(),
-    );
+    return AppScope(controller: _controller, child: const AppView());
   }
 }
 
 class AppScope extends InheritedNotifier<AppController> {
-  const AppScope({
-    required this.controller,
-    required super.child,
-    super.key,
-  }) : super(notifier: controller);
+  const AppScope({required this.controller, required super.child, super.key})
+    : super(notifier: controller);
 
   final AppController controller;
 

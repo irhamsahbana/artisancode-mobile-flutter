@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:ui';
 
 import 'package:flutter/foundation.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:artisan_hr/features/attendance/data/attendance_repository.dart';
 import 'package:artisan_hr/features/attendance/data/models/attendance_log.dart';
@@ -9,6 +10,7 @@ import 'package:artisan_hr/features/attendance/data/models/attendance_policy.dar
 import 'package:artisan_hr/features/attendance/data/models/attendance_summary.dart';
 import 'package:artisan_hr/features/attendance/data/models/check_in_request.dart';
 import 'package:artisan_hr/features/attendance/data/models/check_out_request.dart';
+import 'package:artisan_hr/features/attendance/data/services/device_location_service.dart';
 import 'package:artisan_hr/features/attendance/data/models/employee_profile.dart';
 import 'package:artisan_hr/features/attendance/data/models/shift_today.dart';
 import 'package:artisan_hr/features/auth/data/auth_repository.dart';
@@ -21,11 +23,17 @@ import 'package:artisan_hr/shared/core/logging/app_logger.dart';
 import 'package:artisan_hr/shared/localization/l10n.dart';
 
 class AppController extends ChangeNotifier {
-  AppController({required String initialBaseUrl})
-    : _baseUrl = initialBaseUrl.trim() {
+  AppController({
+    required String initialBaseUrl,
+    required SharedPreferences sharedPreferences,
+  }) : _baseUrl = initialBaseUrl.trim(),
+       _sharedPreferences = sharedPreferences {
+    _hasSeenOnboarding =
+        _sharedPreferences.getBool(hasSeenOnboardingPreferenceKey) ?? false;
     _apiClient = ApiClient(baseUrl: _baseUrl, languageCode: _languageCode);
     _authRepository = AuthRepository(apiClient: _apiClient);
     _attendanceRepository = AttendanceRepository(apiClient: _apiClient);
+    _deviceLocationService = const DeviceLocationService();
     appLogger.i(
       formatLogMessage(
         'app_controller.init',
@@ -35,12 +43,17 @@ class AppController extends ChangeNotifier {
     );
   }
 
+  static const hasSeenOnboardingPreferenceKey = 'has_seen_onboarding';
+
   String _baseUrl;
+  final SharedPreferences _sharedPreferences;
   late ApiClient _apiClient;
   late AuthRepository _authRepository;
   late AttendanceRepository _attendanceRepository;
+  late DeviceLocationService _deviceLocationService;
 
   bool _isBusy = false;
+  bool _hasSeenOnboarding = false;
   AppMessage? _errorMessage;
   AppMessage? _successMessage;
   int _selectedTabIndex = 0;
@@ -56,6 +69,7 @@ class AppController extends ChangeNotifier {
 
   String get baseUrl => _baseUrl;
   bool get isBusy => _isBusy;
+  bool get hasSeenOnboarding => _hasSeenOnboarding;
   AppMessage? get errorMessage => _errorMessage;
   AppMessage? get successMessage => _successMessage;
   int get selectedTabIndex => _selectedTabIndex;
@@ -71,6 +85,14 @@ class AppController extends ChangeNotifier {
 
   bool get canCheckIn => _summary?.canCheckIn ?? false;
   bool get canCheckOut => _summary?.canCheckOut ?? false;
+
+  Future<void> completeOnboarding() async {
+    if (_hasSeenOnboarding) return;
+    _hasSeenOnboarding = true;
+    await _sharedPreferences.setBool(hasSeenOnboardingPreferenceKey, true);
+    appLogger.i(formatLogMessage('onboarding.completed'));
+    notifyListeners();
+  }
 
   void setLanguage(String languageCode) {
     final nextLanguageCode = languageCode == 'en' ? 'en' : 'id';
@@ -280,13 +302,14 @@ class AppController extends ChangeNotifier {
         'attendance.check_in.started',
         details: <String, Object?>{
           'deviceName': deviceName.trim().isEmpty
-              ? 'Artisan HR App'
+              ? 'Presense Mobile'
               : deviceName.trim(),
         },
       ),
     );
 
     try {
+      final currentLocation = await _deviceLocationService.getCurrentLocation();
       final selfieFileId = await _attendanceRepository.uploadAttendancePhoto(
         accessToken: _tokens!.accessToken,
         attendanceType: 'check_in',
@@ -300,9 +323,11 @@ class AppController extends ChangeNotifier {
           notes: notes.trim().isEmpty ? null : notes.trim(),
           deviceId: defaultTargetPlatform.name,
           deviceName: deviceName.trim().isEmpty
-              ? 'Artisan HR App'
+              ? 'Presense Mobile'
               : deviceName.trim(),
           selfieFileId: selfieFileId,
+          latitude: currentLocation?.latitude,
+          longitude: currentLocation?.longitude,
         ),
       );
       _successMessage = const AppMessage.key(AppMessageKey.checkInSuccess);
@@ -342,13 +367,14 @@ class AppController extends ChangeNotifier {
         'attendance.check_out.started',
         details: <String, Object?>{
           'deviceName': deviceName.trim().isEmpty
-              ? 'Artisan HR App'
+              ? 'Presense Mobile'
               : deviceName.trim(),
         },
       ),
     );
 
     try {
+      final currentLocation = await _deviceLocationService.getCurrentLocation();
       final selfieFileId = await _attendanceRepository.uploadAttendancePhoto(
         accessToken: _tokens!.accessToken,
         attendanceType: 'check_out',
@@ -360,9 +386,11 @@ class AppController extends ChangeNotifier {
           loggedAt: DateTime.now(),
           deviceId: defaultTargetPlatform.name,
           deviceName: deviceName.trim().isEmpty
-              ? 'Artisan HR App'
+              ? 'Presense Mobile'
               : deviceName.trim(),
           selfieFileId: selfieFileId,
+          latitude: currentLocation?.latitude,
+          longitude: currentLocation?.longitude,
         ),
       );
       _successMessage = const AppMessage.key(AppMessageKey.checkOutSuccess);
@@ -538,6 +566,7 @@ class AppController extends ChangeNotifier {
     _apiClient = ApiClient(baseUrl: baseUrl, languageCode: _languageCode);
     _authRepository = AuthRepository(apiClient: _apiClient);
     _attendanceRepository = AttendanceRepository(apiClient: _apiClient);
+    _deviceLocationService = const DeviceLocationService();
     appLogger.i(
       formatLogMessage(
         'api.base_url.configured',

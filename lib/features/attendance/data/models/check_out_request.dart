@@ -4,12 +4,16 @@ class CheckOutRequest {
     required this.deviceId,
     required this.deviceName,
     required this.selfieFileId,
+    this.latitude,
+    this.longitude,
   });
 
   final DateTime loggedAt;
   final String deviceId;
   final String deviceName;
   final String selfieFileId;
+  final double? latitude;
+  final double? longitude;
 
   Map<String, dynamic> toJson() {
     return {
@@ -17,6 +21,8 @@ class CheckOutRequest {
       'device_id': deviceId,
       'device_name': deviceName,
       'selfie_file_id': selfieFileId,
+      if (latitude != null) 'latitude': latitude,
+      if (longitude != null) 'longitude': longitude,
     };
   }
 

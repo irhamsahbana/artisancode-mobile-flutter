@@ -1,6 +1,6 @@
 // ignore: unused_import
 import 'package:intl/intl.dart' as intl;
-import 'package:artisan_hr/l10n/generated/app_localizations.dart';
+import 'app_localizations.dart';
 
 // ignore_for_file: type=lint
 
@@ -24,17 +24,114 @@ class AppLocalizationsEn extends AppLocalizations {
   String get signOutTooltip => 'Sign out';
 
   @override
-  String get homeTab => 'Home';
+  String get moreActions => 'More actions';
+
+  @override
+  String get homeTab => 'Today';
 
   @override
   String get historyTab => 'History';
 
   @override
-  String get employeeAttendanceTitle => 'Employee Attendance';
+  String get employeeAttendanceTitle => 'Today\'s attendance';
 
   @override
   String get loginDescription =>
       'Sign in with your employee account to access attendance summary, check-in, check-out, and history.';
+
+  @override
+  String get onboardingBadge => 'Attendance, made clear';
+
+  @override
+  String get onboardingHeadline => 'Clearer check-ins. Smoother workdays.';
+
+  @override
+  String get onboardingSubheadline =>
+      'Presense helps you review today\'s status, record attendance with the right proof, and revisit history without extra friction.';
+
+  @override
+  String get onboardingAttendanceTitle => 'See today\'s status at a glance';
+
+  @override
+  String get onboardingAttendanceDescription =>
+      'As soon as you sign in, you can view your attendance summary, check-in or check-out status, and today\'s active shift.';
+
+  @override
+  String get onboardingProofTitle => 'Record attendance with clear proof';
+
+  @override
+  String get onboardingProofDescription =>
+      'The check-in and check-out flow is ready to submit live location, notes, and photo proof in line with company policy.';
+
+  @override
+  String get justInTimePermissionsTitle =>
+      'Camera and location appear only when they matter';
+
+  @override
+  String get justInTimePermissionsDescription =>
+      'Device permission is requested right before you capture selfie proof or attach coordinates, so the flow stays transparent and easy to trust.';
+
+  @override
+  String get onboardingHistoryTitle => 'History stays easy to scan';
+
+  @override
+  String get onboardingHistoryDescription =>
+      'Review clock-in time, clock-out time, late arrivals, and early departures in one tidy summary.';
+
+  @override
+  String get onboardingPermissionsTitle => 'Device access consent';
+
+  @override
+  String get onboardingPermissionsDescription =>
+      'Before using attendance features, we want to make sure you understand why the app needs location and camera access.';
+
+  @override
+  String get onboardingLocationConsentTitle => 'Allow location access';
+
+  @override
+  String get onboardingLocationConsentDescription =>
+      'Location is used to attach coordinates during check-in and check-out so attendance can be verified according to work policy.';
+
+  @override
+  String get onboardingCameraConsentTitle => 'Allow camera access';
+
+  @override
+  String get onboardingCameraConsentDescription =>
+      'Camera access is used to capture photo proof on every check-in and check-out so attendance records stay accurate.';
+
+  @override
+  String get onboardingPermissionHint =>
+      'After you agree here, your device may still ask for the official system permission the first time each feature is used.';
+
+  @override
+  String get onboardingConsentRequired =>
+      'Agree to location and camera access before continuing to login.';
+
+  @override
+  String get onboardingNext => 'Next';
+
+  @override
+  String get onboardingGetStarted => 'Sign in with my account';
+
+  @override
+  String get skipIntro => 'Skip intro';
+
+  @override
+  String get backToOnboarding => 'Back to intro';
+
+  @override
+  String get loginCardTitle => 'Sign in to Presense';
+
+  @override
+  String get loginCardDescription =>
+      'Use your employee account to review today\'s status, record attendance, and open history quickly.';
+
+  @override
+  String get permissionUsageSummary =>
+      'Camera and location are requested only during check-in or check-out, not on the sign-in screen.';
+
+  @override
+  String get showAdvancedSettings => 'Show advanced settings';
 
   @override
   String get apiBaseUrl => 'API Base URL';
@@ -91,10 +188,13 @@ class AppLocalizationsEn extends AppLocalizations {
       'Check-out recorded successfully with photo proof.';
 
   @override
+  String get syncingAttendanceData => 'Syncing attendance data...';
+
+  @override
   String get employeeFallback => 'Employee';
 
   @override
-  String get attendanceDashboard => 'Attendance dashboard';
+  String get attendanceDashboard => 'Attendance overview';
 
   @override
   String employeeNoLabel(Object value) {
@@ -102,7 +202,7 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get todaySummary => 'Today Summary';
+  String get todaySummary => 'Today\'s summary';
 
   @override
   String get noSummary => 'No summary data is available yet.';
@@ -125,7 +225,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get todayStatusCheckedInDescription =>
-      'Your check-in is recorded. You only need to check out later.';
+      'Your check-in is recorded. Check out when your workday is complete.';
 
   @override
   String get todayStatusCheckedOutDescription =>
@@ -156,10 +256,33 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get checkIn => 'Check In';
+  String get checkIn => 'Check-in';
 
   @override
-  String get checkOut => 'Check Out';
+  String get checkOut => 'Check-out';
+
+  @override
+  String get loadingAttendanceState => 'Checking your attendance status.';
+
+  @override
+  String get checkInAlreadyRecorded =>
+      'Check-in is already recorded for today.';
+
+  @override
+  String get checkInUnavailableHint =>
+      'Check-in is not available yet. Review today\'s status or refresh again in a moment.';
+
+  @override
+  String get checkOutRequiresCheckIn =>
+      'Check-out becomes available after you check in.';
+
+  @override
+  String get checkOutAlreadyRecorded =>
+      'Check-out is already recorded for today.';
+
+  @override
+  String get checkOutUnavailableHint =>
+      'Check-out is not available yet. Review your shift and attendance status first.';
 
   @override
   String get shiftToday => 'Shift Today';
@@ -228,7 +351,10 @@ class AppLocalizationsEn extends AppLocalizations {
       'Photo proof: required on every check-in and check-out';
 
   @override
-  String get recentActivity => 'Recent Activity';
+  String get recentActivity => 'Recent activity';
+
+  @override
+  String get viewAllHistory => 'View all';
 
   @override
   String get noRecentLogs => 'No recent logs';
@@ -238,10 +364,18 @@ class AppLocalizationsEn extends AppLocalizations {
       'Your latest attendance actions will show up here.';
 
   @override
-  String get confirmCheckIn => 'Confirm Check In';
+  String get confirmCheckIn => 'Confirm check-in';
 
   @override
-  String get confirmCheckOut => 'Confirm Check Out';
+  String get confirmCheckOut => 'Confirm check-out';
+
+  @override
+  String get checkInSheetDescription =>
+      'Complete the final details, capture selfie proof, and submit your check-in in one flow.';
+
+  @override
+  String get checkOutSheetDescription =>
+      'Capture selfie proof and submit check-out when your workday is complete.';
 
   @override
   String get addressLabel => 'Address';
@@ -253,6 +387,34 @@ class AppLocalizationsEn extends AppLocalizations {
   String get deviceNameLabel => 'Device name';
 
   @override
+  String get selfieProofTitle => 'Selfie proof';
+
+  @override
+  String get selfieAttached => 'Selfie proof is ready to submit.';
+
+  @override
+  String get selfieRequiredHint =>
+      'Capture a selfie before you submit attendance.';
+
+  @override
+  String get captureSelfie => 'Capture selfie';
+
+  @override
+  String get retakeSelfie => 'Retake selfie';
+
+  @override
+  String get removeSelfie => 'Remove';
+
+  @override
+  String get submittingAttendance => 'Submitting attendance...';
+
+  @override
+  String get submitCheckIn => 'Submit check-in';
+
+  @override
+  String get submitCheckOut => 'Submit check-out';
+
+  @override
   String get cancel => 'Cancel';
 
   @override
@@ -260,6 +422,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get unableToLoadHistory => 'Unable to load history';
+
+  @override
+  String get historyLoadErrorHint =>
+      'Refresh again to load your attendance history.';
 
   @override
   String get noAttendanceLogsYet => 'No attendance logs yet';
@@ -291,4 +457,39 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get noAttendanceRecord => 'No attendance record';
+
+  @override
+  String get statusToneLoadingTitle => 'Preparing today\'s status';
+
+  @override
+  String get statusToneLoadingDescription =>
+      'One moment. We are checking your latest attendance data.';
+
+  @override
+  String get statusToneReadyTitle => 'Ready to check in';
+
+  @override
+  String get statusToneReadyDescription =>
+      'Review your details, capture selfie proof, and submit attendance.';
+
+  @override
+  String get statusToneCheckedInTitle => 'Check-in recorded';
+
+  @override
+  String get statusToneCheckedInDescription =>
+      'Your attendance is active. Remember to check out later.';
+
+  @override
+  String get statusToneDoneTitle => 'All set for today';
+
+  @override
+  String get statusToneDoneDescription =>
+      'Your check-in and check-out are both recorded for today.';
+
+  @override
+  String get historySummaryTitle => 'History overview';
+
+  @override
+  String get historySummaryDescription =>
+      'Review monthly attendance patterns and open each workday in one tap.';
 }

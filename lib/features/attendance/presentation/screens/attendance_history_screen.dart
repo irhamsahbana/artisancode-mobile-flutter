@@ -547,31 +547,84 @@ Future<DateTime?> _pickMonth(BuildContext context, DateTime selectedMonth) {
     12,
     (index) => DateTime(now.year, now.month - index),
   );
+  final colorScheme = Theme.of(context).colorScheme;
 
   return showModalBottomSheet<DateTime>(
     context: context,
-    backgroundColor: Colors.white,
+    backgroundColor: Colors.transparent,
     builder: (context) {
       return SafeArea(
-        child: ListView(
-          shrinkWrap: true,
-          children: months
-              .map((month) {
-                final isSelected =
-                    month.year == selectedMonth.year &&
-                    month.month == selectedMonth.month;
-                return ListTile(
-                  title: Text(_formatMonthYear(context, month)),
-                  trailing: isSelected
-                      ? Icon(
-                          Icons.check_circle_rounded,
-                          color: Theme.of(context).colorScheme.primary,
-                        )
-                      : null,
-                  onTap: () => Navigator.of(context).pop(month),
-                );
-              })
-              .toList(growable: false),
+        top: false,
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
+          child: Container(
+            decoration: BoxDecoration(
+              color: colorScheme.surface,
+              borderRadius: BorderRadius.circular(28),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.12),
+                  blurRadius: 24,
+                  offset: const Offset(0, 12),
+                ),
+              ],
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const SizedBox(height: 12),
+                Container(
+                  width: 44,
+                  height: 5,
+                  decoration: BoxDecoration(
+                    color: colorScheme.outlineVariant,
+                    borderRadius: BorderRadius.circular(999),
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Flexible(
+                  child: ListView(
+                    shrinkWrap: true,
+                    children: months
+                        .map((month) {
+                          final isSelected =
+                              month.year == selectedMonth.year &&
+                              month.month == selectedMonth.month;
+                          return ListTile(
+                            title: Text(
+                              _formatMonthYear(context, month),
+                              style: Theme.of(context).textTheme.titleMedium
+                                  ?.copyWith(
+                                    color: colorScheme.onSurface,
+                                    fontWeight: isSelected
+                                        ? FontWeight.w700
+                                        : FontWeight.w500,
+                                  ),
+                            ),
+                            trailing: isSelected
+                                ? Icon(
+                                    Icons.check_circle_rounded,
+                                    color: colorScheme.primary,
+                                  )
+                                : null,
+                            textColor: colorScheme.onSurface,
+                            iconColor: colorScheme.primary,
+                            selected: isSelected,
+                            selectedTileColor: colorScheme.primaryContainer
+                                .withValues(alpha: 0.28),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(18),
+                            ),
+                            onTap: () => Navigator.of(context).pop(month),
+                          );
+                        })
+                        .toList(growable: false),
+                  ),
+                ),
+                const SizedBox(height: 12),
+              ],
+            ),
+          ),
         ),
       );
     },

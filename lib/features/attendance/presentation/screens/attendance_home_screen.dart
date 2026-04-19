@@ -212,7 +212,12 @@ class _AttendanceHomeScreenState extends State<AttendanceHomeScreen> {
                   lines: policy == null
                       ? [l10n.noPolicy]
                       : [
-                          l10n.timezoneLabel(policy.timezone),
+                          l10n.timezoneLabel(
+                            formatTimezoneLabel(
+                              policy.timezone,
+                              Localizations.localeOf(context).languageCode,
+                            ),
+                          ),
                           l10n.checkInRange(
                             policy.checkInStart ?? '-',
                             policy.checkInEnd ?? '-',
@@ -351,7 +356,7 @@ class _AttendanceHomeScreenState extends State<AttendanceHomeScreen> {
                   deviceName: deviceController.text,
                   selfiePath: selfiePath!,
                 );
-                if (!mounted) return;
+                if (!mounted || !sheetContext.mounted) return;
                 _checkInDraftAddress = null;
                 _checkInDraftNotes = null;
                 _checkInDraftDeviceName = null;
@@ -448,7 +453,7 @@ class _AttendanceHomeScreenState extends State<AttendanceHomeScreen> {
                   deviceName: deviceController.text,
                   selfiePath: selfiePath!,
                 );
-                if (!mounted) return;
+                if (!mounted || !sheetContext.mounted) return;
                 _checkOutDraftDeviceName = null;
                 _checkOutDraftSelfiePath = null;
                 Navigator.of(sheetContext).pop();

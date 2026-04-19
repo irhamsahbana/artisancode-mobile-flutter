@@ -8,3 +8,25 @@ String formatDateTime(DateTime? value) {
       '${local.hour.toString().padLeft(2, '0')}:${local.minute.toString().padLeft(2, '0')}';
   return '$date $time';
 }
+
+String formatTimezoneLabel(String? value, String languageCode) {
+  final timezone = value?.trim();
+  if (timezone == null || timezone.isEmpty || timezone == '-') return '-';
+
+  switch (timezone) {
+    case 'Asia/Jakarta':
+      return 'WIB (Jakarta)';
+    case 'Asia/Makassar':
+      return 'WITA (Makassar)';
+    case 'Asia/Jayapura':
+      return 'WIT (Jayapura)';
+    case 'Asia/Singapore':
+      return languageCode == 'id'
+          ? 'GMT+8 (Singapura)'
+          : 'GMT+8 (Singapore)';
+    case 'UTC':
+      return 'UTC';
+    default:
+      return timezone;
+  }
+}

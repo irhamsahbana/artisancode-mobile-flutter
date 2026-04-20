@@ -6,6 +6,40 @@ import 'package:artisan_hr/shared/core/api/api_response.dart';
 import 'package:artisan_hr/shared/core/errors/app_exception.dart';
 import 'package:artisan_hr/shared/core/logging/app_logger.dart';
 
+class ApiRequestCancellationToken {
+  bool _isCancelled = false;
+  final List<void Function()> _listeners = <void Function()>[];
+
+  bool get isCancelled => _isCancelled;
+
+  void cancel() {
+    if (_isCancelled) {
+      return;
+    }
+    _isCancelled = true;
+    final listeners = List<void Function()>.from(_listeners);
+    _listeners.clear();
+    for (final listener in listeners) {
+      listener();
+    }
+  }
+
+  void Function() addListener(void Function() listener) {
+    if (_isCancelled) {
+      listener();
+      return () {};
+    }
+    _listeners.add(listener);
+    return () {
+      _listeners.remove(listener);
+    };
+  }
+}
+
+class ApiRequestCancelledException implements Exception {
+  const ApiRequestCancelledException();
+}
+
 class ApiClient {
   ApiClient({required String baseUrl, String languageCode = 'id'})
     : _baseUrl = baseUrl,
@@ -27,12 +61,14 @@ class ApiClient {
     String path, {
     String? accessToken,
     Map<String, String?>? queryParameters,
+    ApiRequestCancellationToken? cancellationToken,
   }) {
     return _send(
       method: 'GET',
       path: path,
       accessToken: accessToken,
       queryParameters: queryParameters,
+      cancellationToken: cancellationToken,
     );
   }
 
@@ -136,6 +172,7 @@ class ApiClient {
     String? accessToken,
     Map<String, dynamic>? body,
     Map<String, String?>? queryParameters,
+    ApiRequestCancellationToken? cancellationToken,
   }) async {
     final baseUri = Uri.parse('$_baseUrl$path');
     final sanitizedQueryParameters = queryParameters == null
@@ -163,10 +200,23 @@ class ApiClient {
         },
       ),
     );
+    void Function()? removeCancellationListener;
+
     try {
+      if (cancellationToken?.isCancelled ?? false) {
+        throw const ApiRequestCancelledException();
+      }
+
       final request = await _httpClient
           .openUrl(method, uri)
           .timeout(_connectionTimeout);
+      if (cancellationToken?.isCancelled ?? false) {
+        request.abort(const ApiRequestCancelledException());
+        throw const ApiRequestCancelledException();
+      }
+      removeCancellationListener = cancellationToken?.addListener(() {
+        request.abort(const ApiRequestCancelledException());
+      });
       request.headers.contentType = ContentType.json;
       request.headers.set(HttpHeaders.acceptHeader, 'application/json');
       request.headers.set(HttpHeaders.acceptLanguageHeader, _languageCode);
@@ -214,7 +264,24 @@ class ApiClient {
         ),
       );
       return apiResponse;
+    } on ApiRequestCancelledException {
+      appLogger.i(
+        formatLogMessage(
+          'api.request.cancelled',
+          details: <String, Object?>{'method': method, 'url': uri.toString()},
+        ),
+      );
+      rethrow;
     } on SocketException {
+      if (cancellationToken?.isCancelled ?? false) {
+        appLogger.i(
+          formatLogMessage(
+            'api.request.cancelled',
+            details: <String, Object?>{'method': method, 'url': uri.toString()},
+          ),
+        );
+        throw const ApiRequestCancelledException();
+      }
       appLogger.e(
         formatLogMessage(
           'api.request.failed',
@@ -228,6 +295,15 @@ class ApiClient {
         'Unable to connect to the API. Check the base URL and your network access.',
       );
     } on TimeoutException {
+      if (cancellationToken?.isCancelled ?? false) {
+        appLogger.i(
+          formatLogMessage(
+            'api.request.cancelled',
+            details: <String, Object?>{'method': method, 'url': uri.toString()},
+          ),
+        );
+        throw const ApiRequestCancelledException();
+      }
       appLogger.e(
         formatLogMessage(
           'api.request.failed',
@@ -262,6 +338,8 @@ class ApiClient {
         stackTrace: StackTrace.current,
       );
       rethrow;
+    } finally {
+      removeCancellationListener?.call();
     }
   }
 }

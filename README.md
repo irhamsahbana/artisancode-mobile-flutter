@@ -36,6 +36,7 @@ flutter pub get
 flutter analyze
 flutter test
 flutter run
+make run-ios-simulator
 ```
 
 ## Running Against Local Backend
@@ -50,3 +51,15 @@ flutter run --dart-define=API_BASE_URL=http://127.0.0.1:3939
 ```
 
 For Android emulators, you may need `http://10.0.2.2:3939` instead of `127.0.0.1`.
+
+To open Apple's Simulator and run on a default iPhone simulator in one step:
+
+```bash
+make run-ios-simulator
+```
+
+To target a different simulator:
+
+```bash
+make run-ios-simulator IOS_SIMULATOR="iPhone 16 Pro"
+```

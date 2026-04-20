@@ -39,14 +39,20 @@ class AppView extends StatelessWidget {
         animation: controller,
         builder: (context, _) {
           final l10n = context.l10n;
+          final child = controller.isAuthenticated
+              ? _AuthenticatedShell(controller: controller)
+              : controller.hasSeenOnboarding
+              ? LoginScreen(controller: controller)
+              : OnboardingScreen(controller: controller);
+
+          if (controller.isAuthenticated) {
+            return child;
+          }
+
           return LoadingOverlay(
             isLoading: controller.isBusy,
             label: l10n.syncingAttendanceData,
-            child: controller.isAuthenticated
-                ? _AuthenticatedShell(controller: controller)
-                : controller.hasSeenOnboarding
-                ? LoginScreen(controller: controller)
-                : OnboardingScreen(controller: controller),
+            child: child,
           );
         },
       ),
@@ -89,8 +95,16 @@ class _AuthenticatedShell extends StatelessWidget {
         actions: [
           IconButton(
             tooltip: l10n.refreshTooltip,
-            onPressed: controller.refreshAll,
-            icon: const Icon(Icons.refresh),
+            onPressed: controller.isAttendanceHomeHydrating
+                ? null
+                : controller.refreshAll,
+            icon: controller.isAttendanceHomeHydrating
+                ? const SizedBox(
+                    width: 20,
+                    height: 20,
+                    child: CircularProgressIndicator(strokeWidth: 2.2),
+                  )
+                : const Icon(Icons.refresh),
           ),
           PopupMenuButton<String>(
             tooltip: l10n.moreActions,

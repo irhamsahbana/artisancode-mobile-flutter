@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:artisan_hr/app/app_controller.dart';
 import 'package:artisan_hr/app/presentation/app_brand.dart';
 import 'package:artisan_hr/features/attendance/data/models/attendance_log.dart';
+import 'package:artisan_hr/shared/core/api/api_client.dart';
 import 'package:artisan_hr/shared/localization/l10n.dart';
 import 'package:artisan_hr/shared/presentation/widgets/empty_state.dart';
 
@@ -21,6 +22,7 @@ class _AttendanceHistoryScreenState extends State<AttendanceHistoryScreen> {
   bool _isLoading = true;
   String? _errorMessage;
   List<AttendanceLog> _logs = const [];
+  ApiRequestCancellationToken? _loadCancellationToken;
 
   @override
   void initState() {
@@ -31,6 +33,9 @@ class _AttendanceHistoryScreenState extends State<AttendanceHistoryScreen> {
   }
 
   Future<void> _loadLogs() async {
+    _loadCancellationToken?.cancel();
+    final cancellationToken = ApiRequestCancellationToken();
+    _loadCancellationToken = cancellationToken;
     setState(() {
       _isLoading = true;
       _errorMessage = null;
@@ -39,11 +44,14 @@ class _AttendanceHistoryScreenState extends State<AttendanceHistoryScreen> {
     try {
       final logs = await widget.controller.getAttendanceLogsForMonth(
         _selectedMonth,
+        cancellationToken: cancellationToken,
       );
       if (!mounted) return;
       setState(() {
         _logs = logs;
       });
+    } on ApiRequestCancelledException {
+      return;
     } catch (error) {
       if (!mounted) return;
       setState(() {
@@ -56,6 +64,12 @@ class _AttendanceHistoryScreenState extends State<AttendanceHistoryScreen> {
         });
       }
     }
+  }
+
+  @override
+  void dispose() {
+    _loadCancellationToken?.cancel();
+    super.dispose();
   }
 
   @override

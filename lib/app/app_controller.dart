@@ -51,8 +51,10 @@ class AppController extends ChangeNotifier {
   late AuthRepository _authRepository;
   late AttendanceRepository _attendanceRepository;
   late DeviceLocationService _deviceLocationService;
+  ApiRequestCancellationToken? _attendanceHydrationCancellationToken;
 
   bool _isBusy = false;
+  bool _isAttendanceHomeHydrating = false;
   bool _hasSeenOnboarding = false;
   AppMessage? _errorMessage;
   AppMessage? _successMessage;
@@ -69,6 +71,7 @@ class AppController extends ChangeNotifier {
 
   String get baseUrl => _baseUrl;
   bool get isBusy => _isBusy;
+  bool get isAttendanceHomeHydrating => _isAttendanceHomeHydrating;
   bool get hasSeenOnboarding => _hasSeenOnboarding;
   AppMessage? get errorMessage => _errorMessage;
   AppMessage? get successMessage => _successMessage;
@@ -82,6 +85,12 @@ class AppController extends ChangeNotifier {
   AttendanceSummary? get summary => _summary;
   AttendancePolicy? get policy => _policy;
   List<AttendanceLog> get attendanceLogs => List.unmodifiable(_attendanceLogs);
+  bool get hasAttendanceHomeSnapshot =>
+      _employee != null ||
+      _shiftToday != null ||
+      _summary != null ||
+      _policy != null ||
+      _attendanceLogs.isNotEmpty;
 
   bool get canCheckIn => _summary?.canCheckIn ?? false;
   bool get canCheckOut => _summary?.canCheckOut ?? false;
@@ -186,6 +195,8 @@ class AppController extends ChangeNotifier {
         },
       ),
     );
+    _attendanceHydrationCancellationToken?.cancel();
+    _attendanceHydrationCancellationToken = null;
     _tokens = null;
     _user = null;
     _employee = null;
@@ -193,6 +204,7 @@ class AppController extends ChangeNotifier {
     _summary = null;
     _policy = null;
     _attendanceLogs = const [];
+    _isAttendanceHomeHydrating = false;
     _selectedTabIndex = 0;
     _successMessage = const AppMessage.key(AppMessageKey.signedOut);
     _errorMessage = null;
@@ -217,6 +229,8 @@ class AppController extends ChangeNotifier {
           },
         ),
       );
+    } on ApiRequestCancelledException {
+      appLogger.i(formatLogMessage('attendance.refresh_all.cancelled'));
     } on AppException catch (error) {
       _errorMessage = AppMessage.raw(error.message);
       appLogger.e(
@@ -271,7 +285,10 @@ class AppController extends ChangeNotifier {
     }
   }
 
-  Future<List<AttendanceLog>> getAttendanceLogsForMonth(DateTime month) async {
+  Future<List<AttendanceLog>> getAttendanceLogsForMonth(
+    DateTime month, {
+    ApiRequestCancellationToken? cancellationToken,
+  }) async {
     if (_tokens == null) return const [];
 
     final firstDay = DateTime(month.year, month.month);
@@ -283,6 +300,7 @@ class AppController extends ChangeNotifier {
       dateTo: _formatDate(lastDay),
       limit: 200,
       page: 1,
+      cancellationToken: cancellationToken,
     );
   }
 
@@ -437,6 +455,10 @@ class AppController extends ChangeNotifier {
   Future<void> _bootstrapAuthenticatedState({bool loadLogs = true}) async {
     final accessToken = _tokens?.accessToken;
     if (accessToken == null) return;
+    _attendanceHydrationCancellationToken?.cancel();
+    final cancellationToken = ApiRequestCancellationToken();
+    _attendanceHydrationCancellationToken = cancellationToken;
+    _setAttendanceHomeHydrating(true);
     final stopwatch = Stopwatch()..start();
     appLogger.i(
       formatLogMessage(
@@ -444,121 +466,138 @@ class AppController extends ChangeNotifier {
         details: <String, Object?>{'loadLogs': loadLogs},
       ),
     );
-    appLogger.i(
-      formatLogMessage(
-        'bootstrap.authenticated.step.started',
-        details: const <String, Object?>{'step': 'getMe'},
-      ),
-    );
-    final user = await _authRepository.getMe(accessToken: accessToken);
-    appLogger.i(
-      formatLogMessage(
-        'bootstrap.authenticated.step.succeeded',
-        details: const <String, Object?>{'step': 'getMe'},
-      ),
-    );
-
-    appLogger.i(
-      formatLogMessage(
-        'bootstrap.authenticated.step.started',
-        details: const <String, Object?>{'step': 'getEmployeeProfile'},
-      ),
-    );
-    final employee = await _attendanceRepository.getEmployeeProfile(
-      accessToken: accessToken,
-    );
-    appLogger.i(
-      formatLogMessage(
-        'bootstrap.authenticated.step.succeeded',
-        details: const <String, Object?>{'step': 'getEmployeeProfile'},
-      ),
-    );
-
-    appLogger.i(
-      formatLogMessage(
-        'bootstrap.authenticated.step.started',
-        details: const <String, Object?>{'step': 'getAttendanceSummary'},
-      ),
-    );
-    final summary = await _attendanceRepository.getAttendanceSummary(
-      accessToken: accessToken,
-    );
-    appLogger.i(
-      formatLogMessage(
-        'bootstrap.authenticated.step.succeeded',
-        details: const <String, Object?>{'step': 'getAttendanceSummary'},
-      ),
-    );
-
-    appLogger.i(
-      formatLogMessage(
-        'bootstrap.authenticated.step.started',
-        details: const <String, Object?>{'step': 'getAttendancePolicy'},
-      ),
-    );
-    final policy = await _attendanceRepository.getAttendancePolicy(
-      accessToken: accessToken,
-    );
-    appLogger.i(
-      formatLogMessage(
-        'bootstrap.authenticated.step.succeeded',
-        details: const <String, Object?>{'step': 'getAttendancePolicy'},
-      ),
-    );
-
-    appLogger.i(
-      formatLogMessage(
-        'bootstrap.authenticated.step.started',
-        details: const <String, Object?>{'step': 'getShiftToday'},
-      ),
-    );
-    final shiftToday = await _attendanceRepository.getShiftToday(
-      accessToken: accessToken,
-    );
-    appLogger.i(
-      formatLogMessage(
-        'bootstrap.authenticated.step.succeeded',
-        details: const <String, Object?>{'step': 'getShiftToday'},
-      ),
-    );
-
-    List<AttendanceLog> attendanceLogs = _attendanceLogs;
-    if (loadLogs) {
+    try {
       appLogger.i(
         formatLogMessage(
           'bootstrap.authenticated.step.started',
-          details: const <String, Object?>{'step': 'getAttendanceLogs'},
+          details: const <String, Object?>{'step': 'getMe'},
         ),
       );
-      attendanceLogs = await _attendanceRepository.getAttendanceLogs(
+      final user = await _authRepository.getMe(
         accessToken: accessToken,
+        cancellationToken: cancellationToken,
       );
       appLogger.i(
         formatLogMessage(
           'bootstrap.authenticated.step.succeeded',
-          details: const <String, Object?>{'step': 'getAttendanceLogs'},
+          details: const <String, Object?>{'step': 'getMe'},
         ),
       );
-    }
 
-    _user = user;
-    _employee = employee;
-    _summary = summary;
-    _policy = policy;
-    _shiftToday = shiftToday;
-    _attendanceLogs = List<AttendanceLog>.from(attendanceLogs);
-    appLogger.i(
-      formatLogMessage(
-        'bootstrap.authenticated.succeeded',
-        details: <String, Object?>{
-          'hasUser': _user != null,
-          'hasEmployee': _employee != null,
-          'logs': _attendanceLogs.length,
-          'elapsedMs': stopwatch.elapsedMilliseconds,
-        },
-      ),
-    );
-    notifyListeners();
+      appLogger.i(
+        formatLogMessage(
+          'bootstrap.authenticated.step.started',
+          details: const <String, Object?>{'step': 'getEmployeeProfile'},
+        ),
+      );
+      final employee = await _attendanceRepository.getEmployeeProfile(
+        accessToken: accessToken,
+        cancellationToken: cancellationToken,
+      );
+      appLogger.i(
+        formatLogMessage(
+          'bootstrap.authenticated.step.succeeded',
+          details: const <String, Object?>{'step': 'getEmployeeProfile'},
+        ),
+      );
+
+      appLogger.i(
+        formatLogMessage(
+          'bootstrap.authenticated.step.started',
+          details: const <String, Object?>{'step': 'getAttendanceSummary'},
+        ),
+      );
+      final summary = await _attendanceRepository.getAttendanceSummary(
+        accessToken: accessToken,
+        cancellationToken: cancellationToken,
+      );
+      appLogger.i(
+        formatLogMessage(
+          'bootstrap.authenticated.step.succeeded',
+          details: const <String, Object?>{'step': 'getAttendanceSummary'},
+        ),
+      );
+
+      appLogger.i(
+        formatLogMessage(
+          'bootstrap.authenticated.step.started',
+          details: const <String, Object?>{'step': 'getAttendancePolicy'},
+        ),
+      );
+      final policy = await _attendanceRepository.getAttendancePolicy(
+        accessToken: accessToken,
+        cancellationToken: cancellationToken,
+      );
+      appLogger.i(
+        formatLogMessage(
+          'bootstrap.authenticated.step.succeeded',
+          details: const <String, Object?>{'step': 'getAttendancePolicy'},
+        ),
+      );
+
+      appLogger.i(
+        formatLogMessage(
+          'bootstrap.authenticated.step.started',
+          details: const <String, Object?>{'step': 'getShiftToday'},
+        ),
+      );
+      final shiftToday = await _attendanceRepository.getShiftToday(
+        accessToken: accessToken,
+        cancellationToken: cancellationToken,
+      );
+      appLogger.i(
+        formatLogMessage(
+          'bootstrap.authenticated.step.succeeded',
+          details: const <String, Object?>{'step': 'getShiftToday'},
+        ),
+      );
+
+      List<AttendanceLog> attendanceLogs = _attendanceLogs;
+      if (loadLogs) {
+        appLogger.i(
+          formatLogMessage(
+            'bootstrap.authenticated.step.started',
+            details: const <String, Object?>{'step': 'getAttendanceLogs'},
+          ),
+        );
+        attendanceLogs = await _attendanceRepository.getAttendanceLogs(
+          accessToken: accessToken,
+          cancellationToken: cancellationToken,
+        );
+        appLogger.i(
+          formatLogMessage(
+            'bootstrap.authenticated.step.succeeded',
+            details: const <String, Object?>{'step': 'getAttendanceLogs'},
+          ),
+        );
+      }
+
+      _user = user;
+      _employee = employee;
+      _summary = summary;
+      _policy = policy;
+      _shiftToday = shiftToday;
+      _attendanceLogs = List<AttendanceLog>.from(attendanceLogs);
+      appLogger.i(
+        formatLogMessage(
+          'bootstrap.authenticated.succeeded',
+          details: <String, Object?>{
+            'hasUser': _user != null,
+            'hasEmployee': _employee != null,
+            'logs': _attendanceLogs.length,
+            'elapsedMs': stopwatch.elapsedMilliseconds,
+          },
+        ),
+      );
+      notifyListeners();
+    } on ApiRequestCancelledException {
+      appLogger.i(formatLogMessage('bootstrap.authenticated.cancelled'));
+    } finally {
+      if (identical(_attendanceHydrationCancellationToken, cancellationToken)) {
+        _attendanceHydrationCancellationToken = null;
+        _setAttendanceHomeHydrating(false);
+      }
+    }
   }
 
   void _configureBaseUrl(String baseUrl) {
@@ -591,6 +630,20 @@ class AppController extends ChangeNotifier {
       formatLogMessage(
         'ui.busy_changed',
         details: <String, Object?>{'isBusy': value},
+      ),
+    );
+    notifyListeners();
+  }
+
+  void _setAttendanceHomeHydrating(bool value) {
+    if (_isAttendanceHomeHydrating == value) {
+      return;
+    }
+    _isAttendanceHomeHydrating = value;
+    appLogger.i(
+      formatLogMessage(
+        'ui.attendance_home_hydrating_changed',
+        details: <String, Object?>{'isHydrating': value},
       ),
     );
     notifyListeners();

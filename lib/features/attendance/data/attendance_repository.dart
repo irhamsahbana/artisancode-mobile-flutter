@@ -23,10 +23,12 @@ class AttendanceRepository {
 
   Future<EmployeeProfile?> getEmployeeProfile({
     required String accessToken,
+    ApiRequestCancellationToken? cancellationToken,
   }) async {
     final response = await _apiClient.get(
       '/me/employee',
       accessToken: accessToken,
+      cancellationToken: cancellationToken,
     );
     return response.dataOrNull == null
         ? null
@@ -35,10 +37,12 @@ class AttendanceRepository {
 
   Future<AttendanceSummary?> getAttendanceSummary({
     required String accessToken,
+    ApiRequestCancellationToken? cancellationToken,
   }) async {
     final response = await _apiClient.get(
       '/attendance-summary/today',
       accessToken: accessToken,
+      cancellationToken: cancellationToken,
     );
     return response.dataOrNull == null
         ? null
@@ -47,20 +51,26 @@ class AttendanceRepository {
 
   Future<AttendancePolicy?> getAttendancePolicy({
     required String accessToken,
+    ApiRequestCancellationToken? cancellationToken,
   }) async {
     final response = await _apiClient.get(
       '/attendance-policy',
       accessToken: accessToken,
+      cancellationToken: cancellationToken,
     );
     return response.dataOrNull == null
         ? null
         : AttendancePolicy.fromJson(response.requireDataMap());
   }
 
-  Future<ShiftToday?> getShiftToday({required String accessToken}) async {
+  Future<ShiftToday?> getShiftToday({
+    required String accessToken,
+    ApiRequestCancellationToken? cancellationToken,
+  }) async {
     final response = await _apiClient.get(
       '/me/shift-today',
       accessToken: accessToken,
+      cancellationToken: cancellationToken,
     );
     return response.dataOrNull == null
         ? null
@@ -73,6 +83,7 @@ class AttendanceRepository {
     String? dateTo,
     int limit = 100,
     int page = 1,
+    ApiRequestCancellationToken? cancellationToken,
   }) async {
     final response = await _apiClient.get(
       '/attendance-logs',
@@ -83,6 +94,7 @@ class AttendanceRepository {
         'limit': '$limit',
         'page': '$page',
       },
+      cancellationToken: cancellationToken,
     );
     final data = response.dataOrNull;
     if (data is List) {

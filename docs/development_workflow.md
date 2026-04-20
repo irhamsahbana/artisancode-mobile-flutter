@@ -8,6 +8,7 @@ Use the smallest command that is enough to validate the current change:
 2. `flutter analyze`
 3. `flutter test`
 4. `flutter run`
+5. `make run-ios-simulator` when you want Make to open Apple's Simulator first
 
 ## Recommended Work Order
 

@@ -42,6 +42,9 @@
 - Reuse shared widgets before creating one-off components.
 - Keep widgets small and composable.
 - Every network-driven screen should have clear loading, empty, error, and success states.
+- Prefer non-blocking screen hydration for network-driven screens. Enter the screen first, then load section data inside the screen whenever the action does not require blocking the whole app.
+- Use skeleton states that preserve the final layout instead of blank space or full-screen spinners when a screen is still hydrating.
+- When refreshing existing data, prefer keeping the current content visible with inline progress rather than clearing the screen back to an initial loading state.
 - Preserve mobile-first ergonomics by default: tap targets, safe areas, keyboard behavior, and responsive layout decisions all matter.
 - Do not hardcode `fontSize` values in widgets. Prefer the app typography scale from `Theme.of(context).textTheme` and adjust emphasis with semantic styles or font weight instead of fixed sizes.
 - Read `docs/ui_branding.md` before changing app branding, themed surfaces, splash screens, app icons, dark mode, or major visual hierarchy.

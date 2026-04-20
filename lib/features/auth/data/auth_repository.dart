@@ -17,8 +17,15 @@ class AuthRepository {
     return AuthTokens.fromJson(response.requireDataMap());
   }
 
-  Future<UserContext> getMe({required String accessToken}) async {
-    final response = await _apiClient.get('/me', accessToken: accessToken);
+  Future<UserContext> getMe({
+    required String accessToken,
+    ApiRequestCancellationToken? cancellationToken,
+  }) async {
+    final response = await _apiClient.get(
+      '/me',
+      accessToken: accessToken,
+      cancellationToken: cancellationToken,
+    );
 
     return UserContext.fromJson(response.requireDataMap());
   }

@@ -33,6 +33,10 @@
 ## UI Conventions
 
 - Every async screen should define loading, empty, error, and success states.
+- Prefer non-blocking initial screen rendering. If the user can already enter the screen shell safely, render the shell first and hydrate remote sections afterward.
+- Use skeleton placeholders that closely match the final card, list, or hero layout to reduce visual jump when data arrives.
+- Avoid full-screen blocking loaders for routine screen hydration. Reserve blocking loading states for actions that truly lock interaction, such as authentication hand-off or irreversible submissions.
+- During refresh, keep the last successful content on screen and show lightweight inline progress instead of resetting the whole view to loading.
 - Prefer reusable widgets for repeated status cards, list rows, and action buttons.
 - Design for narrow mobile widths first, then let the layout expand gracefully.
 - Use theme tokens instead of ad-hoc colors for component surfaces, text, borders, and modal backgrounds.

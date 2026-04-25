@@ -11,11 +11,19 @@
 
 - Use `bash`, `zsh`, or `fish` for shell commands.
 - Prefer `flutter` and `dart` CLI tools directly.
+- Prefer the repo `Makefile` when it already captures device selection or `API_BASE_URL` / `ANDROID_API_BASE_URL` defaults.
 - Common commands:
   - `flutter pub get`
   - `flutter analyze`
   - `flutter test`
+  - `make check`
   - `flutter run`
+  - `make run-ios-simulator`
+  - `make run-android-emulator`
+  - `make run-macos`
+  - `make run-chrome`
+  - `make doctor`
+  - `make devices`
 
 ## Stack And Direction
 
@@ -76,6 +84,8 @@
 ## Verification Checklist
 
 - After meaningful app changes, run the smallest relevant checks first.
+- `make check` is the repo wrapper for `flutter analyze` and `flutter test`.
+- Prefer the `make run-*` targets for local backend testing when you want the repo's default `--dart-define` base URL behavior instead of wiring it manually.
 - Default verification order:
   1. `flutter analyze`
   2. `flutter test`

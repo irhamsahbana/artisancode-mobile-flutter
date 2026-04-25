@@ -312,13 +312,8 @@ class AppLocalizationsId extends AppLocalizations {
   }
 
   @override
-  String checkInRange(Object start, Object end) {
-    return 'Check-in: $start - $end';
-  }
-
-  @override
-  String checkOutRange(Object start, Object end) {
-    return 'Check-out: $start - $end';
+  String attendanceRadiusLabel(Object value) {
+    return 'Radius absensi: $value m';
   }
 
   @override

@@ -638,17 +638,11 @@ abstract class AppLocalizations {
   /// **'Timezone: {value}'**
   String timezoneLabel(Object value);
 
-  /// No description provided for @checkInRange.
+  /// No description provided for @attendanceRadiusLabel.
   ///
   /// In en, this message translates to:
-  /// **'Check-in: {start} - {end}'**
-  String checkInRange(Object start, Object end);
-
-  /// No description provided for @checkOutRange.
-  ///
-  /// In en, this message translates to:
-  /// **'Check-out: {start} - {end}'**
-  String checkOutRange(Object start, Object end);
+  /// **'Attendance radius: {value} m'**
+  String attendanceRadiusLabel(Object value);
 
   /// No description provided for @profile.
   ///

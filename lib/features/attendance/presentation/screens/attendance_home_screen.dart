@@ -235,13 +235,8 @@ class _AttendanceHomeScreenState extends State<AttendanceHomeScreen> {
                               Localizations.localeOf(context).languageCode,
                             ),
                           ),
-                          l10n.checkInRange(
-                            policy.checkInStart ?? '-',
-                            policy.checkInEnd ?? '-',
-                          ),
-                          l10n.checkOutRange(
-                            policy.checkOutStart ?? '-',
-                            policy.checkOutEnd ?? '-',
+                          l10n.attendanceRadiusLabel(
+                            policy.radiusMeters?.toString() ?? '-',
                           ),
                         ],
                 ),

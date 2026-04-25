@@ -116,18 +116,10 @@
       "value": {}
     }
   },
-  "checkInRange": "Check-in: {start} - {end}",
-  "@checkInRange": {
+  "attendanceRadiusLabel": "Radius absensi: {value} m",
+  "@attendanceRadiusLabel": {
     "placeholders": {
-      "start": {},
-      "end": {}
-    }
-  },
-  "checkOutRange": "Check-out: {start} - {end}",
-  "@checkOutRange": {
-    "placeholders": {
-      "start": {},
-      "end": {}
+      "value": {}
     }
   },
   "profile": "Profil",

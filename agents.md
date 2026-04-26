@@ -18,7 +18,11 @@
   - `flutter test`
   - `make check`
   - `flutter run`
+  - `make ios-simulators`
+  - `make open-ios-simulator`
   - `make run-ios-simulator`
+  - `make run-ios-profile`
+  - `make run-ios-release`
   - `make run-android-emulator`
   - `make run-macos`
   - `make run-chrome`

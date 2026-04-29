@@ -13,11 +13,14 @@
 - Prefer `flutter` and `dart` CLI tools directly.
 - Prefer the repo `Makefile` when it already captures device selection or `API_BASE_URL` / `ANDROID_API_BASE_URL` defaults.
 - Common commands:
+  - `make help`
   - `flutter pub get`
   - `flutter analyze`
   - `flutter test`
   - `make check`
   - `flutter run`
+  - `make pub-get`
+  - `make run`
   - `make ios-simulators`
   - `make open-ios-simulator`
   - `make run-ios-simulator`
@@ -26,8 +29,10 @@
   - `make run-android-emulator`
   - `make run-macos`
   - `make run-chrome`
+  - `make clean`
   - `make doctor`
   - `make devices`
+- For local backend testing, prefer `make run` or the `make run-*` targets when you want the repo's default `--dart-define` base URL wiring. Override `API_BASE_URL` or `ANDROID_API_BASE_URL` on the command line instead of editing app code.
 
 ## Stack And Direction
 

@@ -43,6 +43,7 @@ void main() {
     await goNext();
 
     expect(find.text('Masuk ke Presense'), findsOneWidget);
+    expect(find.text('Masuk'), findsOneWidget);
     expect(
       find.textContaining(
         'Kamera dan lokasi hanya diminta saat Anda check-in atau check-out',
@@ -60,6 +61,7 @@ void main() {
     await tester.pumpWidget(ArtisanHrApp(sharedPreferences: sharedPreferences));
 
     expect(find.text('Masuk ke Presense'), findsOneWidget);
+    expect(find.text('Masuk'), findsOneWidget);
     expect(
       find.text('Check-in lebih jelas. Hari kerja lebih tertata.'),
       findsNothing,

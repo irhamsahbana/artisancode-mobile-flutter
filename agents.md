@@ -6,6 +6,7 @@
 - When editing files, always use absolute paths.
 - Explain why a file change is being made.
 - When generating code, add comments in English.
+- Before using Serena symbolic tools or Serena memories for mobile work, activate the Serena project at `/Users/codebeast/Documents/src/artisancode/mobile-hr/artisan_hr`. Do not operate Serena on the umbrella workspace for mobile tasks.
 
 ## Shell And Commands
 
@@ -112,3 +113,4 @@
 - When project structure or conventions change, update the related docs in the same task when practical.
 - When a task changes how future mobile work should be executed, documented, or reviewed, update the relevant `agents.md` and `docs/` files in the same task when practical.
 - Keep docs lightweight, practical, and implementation-oriented while the app is still in the foundation stage.
+- Serena startup sequence for mobile tasks is: activate project `/Users/codebeast/Documents/src/artisancode/mobile-hr/artisan_hr`, check onboarding/memory availability, read relevant memories, then begin symbol navigation or edits.

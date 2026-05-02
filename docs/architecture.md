@@ -83,7 +83,7 @@ The mobile app should use these backend endpoints as the contract baseline:
 
 Backend documentation source of truth:
 
-- `/Users/codebeast/Documents/src/artisancode/artisancode-backend-go/docs/mobile_attendance_v1.md`
+- `../../artisancode-backend-go/docs/mobile_attendance_v1.md`
 
 ## Initial Feature Flow
 

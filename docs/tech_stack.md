@@ -35,7 +35,7 @@ Choose tools that keep onboarding simple and testing straightforward.
 
 ## API Environment
 
-The mobile app will target the Go backend in `/Users/codebeast/Documents/src/artisancode/artisancode-backend-go`.
+The mobile app will target the Go backend in `../../artisancode-backend-go`.
 
 At minimum, the mobile setup will eventually need:
 

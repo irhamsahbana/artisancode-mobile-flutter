@@ -10,6 +10,8 @@ Use the smallest command that is enough to validate the current change:
 4. `flutter run`
 5. `make run-ios-simulator` when you want Make to open Apple's Simulator first
 
+Stop any `flutter run` or `make run-*` session started for the task before finishing.
+
 ## Recommended Work Order
 
 When building a new mobile feature:

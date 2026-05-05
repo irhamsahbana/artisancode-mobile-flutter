@@ -37,6 +37,7 @@
   - `make devices`
 - For local backend testing, prefer `make run` or the `make run-*` targets when you want the repo's default `--dart-define` base URL wiring. Override `API_BASE_URL` or `ANDROID_API_BASE_URL` on the command line instead of editing app code.
 - Override `IOS_SIMULATOR`, `IOS_DEVICE`, or `FLUTTER` on the command line when needed instead of editing the repo `Makefile`.
+- After local mobile testing, stop any `flutter run` or `make run-*` session started for the task before finishing.
 
 ## Stack And Direction
 

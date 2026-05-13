@@ -1,5 +1,10 @@
 # Mobile HR Agent Guide
 
+## Read Before Editing
+
+- `docs/development_workflow.md` for daily command order, verification flow, and implementation sequencing.
+- `docs/coding_conventions.md` for current Dart, UI, and testing conventions.
+
 ## Core Expectations
 
 - Be objective and truthful, even if the feedback is uncomfortable.
@@ -13,6 +18,7 @@
 - Use `bash`, `zsh`, or `fish` for shell commands.
 - Prefer `flutter` and `dart` CLI tools directly.
 - Prefer the repo `Makefile` when it already captures device selection or `API_BASE_URL` / `ANDROID_API_BASE_URL` defaults.
+- Use `make run-ios-simulator` when you want the repo workflow to open Apple's Simulator and apply the default `API_BASE_URL` in one step.
 - Common commands:
   - `make help`
   - `flutter pub get`
@@ -43,7 +49,7 @@
 
 - Primary stack: Flutter, Dart, Material 3.
 - Current product direction: employee mobile app with attendance as the first vertical slice.
-- The backend contract lives in `../../artisancode-backend-go/docs/mobile_attendance_v1.md`.
+- The backend contract lives in `../../backend/docs/mobile_attendance_v1.md`.
 - Prefer simple, maintainable architecture while the app foundation is still taking shape.
 
 ## Project Structure
